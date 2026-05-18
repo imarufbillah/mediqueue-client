@@ -5,6 +5,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/providers/ThemeProvider";
+import Navbar from "@/components/layout/Navbar";
 
 const dmSerifDisplay = DM_Serif_Display({
   variable: "--font-dm-serif-display",
@@ -36,7 +37,12 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
     >
       <body className="">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <Navbar/>
+          <main className="pt-16">
+            {children}
+            </main>
+        </ThemeProvider>
       </body>
     </html>
   );
