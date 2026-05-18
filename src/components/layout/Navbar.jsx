@@ -35,12 +35,14 @@ const AUTH_LINKS = [
 
 const Navbar = () => {
   const { data: session } = authClient.useSession();
-  console.log(session);
   const isLoggedIn = !!session?.user;
-
   const user = session?.user || { name: "User", image: null };
 
   const pathname = usePathname();
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+  };
 
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -161,7 +163,10 @@ const Navbar = () => {
                     Profile
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2.5 text-destructive focus:text-destructive">
+                <DropdownMenuItem
+                  onClick={handleSignOut}
+                  className="flex items-center gap-2.5 text-destructive focus:text-destructive"
+                >
                   <LogOut className="size-4" />
                   Logout
                 </DropdownMenuItem>
@@ -245,7 +250,10 @@ const Navbar = () => {
                 <User className="size-5" />
                 Profile
               </Link>
-              <button className="flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-destructive hover:bg-destructive/10">
+              <button
+                onClick={handleSignOut}
+                className="flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-destructive hover:bg-destructive/10"
+              >
                 <LogOut className="size-5" />
                 Logout
               </button>
