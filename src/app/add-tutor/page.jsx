@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, DollarSign, User } from "lucide-react";
+import { ArrowLeft, DollarSign, User, Loader2 } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { listTutor } from "@/lib/api-client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const SUBJECTS = [
   "Mathematics",
@@ -41,16 +44,38 @@ const SectionHeader = ({ title }) => (
 );
 
 const AddTutorPage = () => {
+  const router = useRouter();
+
   const [photoUrl, setPhotoUrl] = useState("");
   const [startDate, setStartDate] = useState(null);
+  const [isPending, setIsPending] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setIsPending(true);
 
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
 
-    console.log("Form Data:", data);
+    const form = e.currentTarget;
+
+    try {
+      await listTutor(data);
+      toast.success("Tutor listed successfully!");
+
+      form.reset();
+      setPhotoUrl("");
+      setStartDate(null);
+
+      setTimeout(() => {
+        router.push("/");
+        router.refresh();
+      }, 1000);
+    } catch (error) {
+      toast.error("Failed to list tutor. Please try again.");
+      setIsPending(false);
+    }
   };
 
   return (
@@ -285,8 +310,15 @@ const AddTutorPage = () => {
           {/* Submit Area */}
           <div className="border-t border-border pt-8">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <Button type="submit" size="lg" className="sm:flex-1">
-                Create Listing
+              <Button type="submit" size="lg" className="sm:flex-1" disabled={isPending}>
+                {isPending ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  "Create Listing"
+                )}
               </Button>
               <Button variant="ghost" size="lg" asChild className="sm:flex-1">
                 <Link href="/">Cancel</Link>
