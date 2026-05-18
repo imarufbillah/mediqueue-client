@@ -2,28 +2,119 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Eye, EyeOff, Check, X, Info, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff, Check, X, Info, Star, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { authClient } from "@/lib/auth-client";
 
-// Hardcoded password state for design purposes
-const STRENGTH_LEVEL = 2; // 0 = none, 1 = weak, 2 = medium, 3 = strong
-const PASSWORD_CHECKS = [
-  { label: "At least 6 characters", passed: true },
-  { label: "One uppercase letter", passed: true },
-  { label: "One lowercase letter", passed: false },
+const STRENGTH_LABELS = ["", "Weak", "Medium", "Strong", "Strongest"];
+const STRENGTH_COLORS = [
+  "",
+  "bg-destructive",
+  "bg-yellow-500",
+  "bg-green-500",
+  "bg-emerald-500",
 ];
 
-const STRENGTH_LABELS = ["", "Weak", "Medium", "Strong"];
-const STRENGTH_COLORS = ["", "bg-destructive", "bg-yellow-500", "bg-green-500"];
-
 const RegisterPage = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [photoUrl, setPhotoUrl] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
+
+  // Password strength checks
+  const isLongEnough = password.length >= 6;
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+
+  const PASSWORD_CHECKS = [
+    { label: "At least 6 characters", passed: isLongEnough },
+    { label: "One uppercase letter", passed: hasUppercase },
+    { label: "One lowercase letter", passed: hasLowercase },
+    { label: "One number", passed: hasNumber },
+  ];
+
+  const STRENGTH_LEVEL = isLongEnough + hasUppercase + hasLowercase + hasNumber;
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!name.trim()) {
+      newErrors.name = "Full name is required";
+    } else if (name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
+    }
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    if (photoUrl && !/^https?:\/\/.+\..+/.test(photoUrl)) {
+      newErrors.photoUrl = "Please enter a valid URL";
+    }
+
+    if (!password) {
+      newErrors.password = "Password is required";
+    } else if (!isLongEnough) {
+      newErrors.password = "Password must be at least 6 characters";
+    } else if (!hasUppercase) {
+      newErrors.password = "Password must contain an uppercase letter";
+    } else if (!hasLowercase) {
+      newErrors.password = "Password must contain a lowercase letter";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const clearFieldError = (field) => {
+    if (errors[field]) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    if (!validate()) return;
+
+    setLoading(true);
+
+    try {
+      const { error } = await authClient.signUp.email({
+        name: name.trim(),
+        email: email.trim(),
+        password,
+        image: photoUrl.trim() || undefined,
+      });
+
+      if (error) {
+        toast.error(error.message || "Registration failed. Please try again.");
+        return;
+      }
+
+      toast.success("Account created successfully!");
+      router.push("/login");
+    } catch (err) {
+      toast.error("Something went wrong. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex min-h-dvh">
@@ -54,7 +145,9 @@ const RegisterPage = () => {
           {/* Logo */}
           <div className="mb-10 flex items-center gap-0.5">
             <span className="text-3xl font-heading text-foreground">Medi</span>
-            <span className="text-3xl font-sans font-bold text-primary">Queue</span>
+            <span className="text-3xl font-sans font-bold text-primary">
+              Queue
+            </span>
           </div>
 
           {/* Display heading */}
@@ -62,7 +155,8 @@ const RegisterPage = () => {
             Join thousands of students finding their perfect tutor.
           </h2>
           <p className="max-w-xs text-base text-muted-foreground">
-            Create your free account and start learning with the best tutors today.
+            Create your free account and start learning with the best tutors
+            today.
           </p>
         </div>
 
@@ -74,9 +168,12 @@ const RegisterPage = () => {
             ))}
           </div>
           <p className="max-w-xs text-center text-sm italic text-muted-foreground">
-            &ldquo;I found an amazing chemistry tutor within minutes. The booking process was seamless.&rdquo;
+            &ldquo;I found an amazing chemistry tutor within minutes. The
+            booking process was seamless.&rdquo;
           </p>
-          <span className="text-xs font-medium text-foreground">— Alex R., Engineering Student</span>
+          <span className="text-xs font-medium text-foreground">
+            — Alex R., Engineering Student
+          </span>
         </div>
       </div>
 
@@ -86,7 +183,9 @@ const RegisterPage = () => {
           {/* Mobile logo */}
           <div className="mb-8 flex items-center gap-0.5 lg:hidden">
             <span className="text-2xl font-heading text-foreground">Medi</span>
-            <span className="text-2xl font-sans font-bold text-primary">Queue</span>
+            <span className="text-2xl font-sans font-bold text-primary">
+              Queue
+            </span>
           </div>
 
           {/* Header */}
@@ -98,7 +197,7 @@ const RegisterPage = () => {
           </p>
 
           {/* Form */}
-          <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-5">
+          <form onSubmit={handleRegister} className="flex flex-col gap-5">
             {/* Full Name */}
             <div className="flex flex-col gap-2">
               <Label htmlFor="name">Full Name</Label>
@@ -107,9 +206,16 @@ const RegisterPage = () => {
                 type="text"
                 placeholder="John Doe"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  clearFieldError("name");
+                }}
                 autoComplete="name"
+                aria-invalid={!!errors.name}
               />
+              {errors.name && (
+                <p className="text-sm text-destructive">{errors.name}</p>
+              )}
             </div>
 
             {/* Email */}
@@ -120,9 +226,16 @@ const RegisterPage = () => {
                 type="email"
                 placeholder="you@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  clearFieldError("email");
+                }}
                 autoComplete="email"
+                aria-invalid={!!errors.email}
               />
+              {errors.email && (
+                <p className="text-sm text-destructive">{errors.email}</p>
+              )}
             </div>
 
             {/* Photo URL */}
@@ -130,8 +243,8 @@ const RegisterPage = () => {
               <div className="flex items-center gap-1.5">
                 <Label htmlFor="photo">Photo URL</Label>
                 <div className="group relative">
-                  <Info className="size-3.5 text-muted-foreground cursor-help" />
-                  <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 rounded-lg bg-popover px-3 py-2 text-xs text-popover-foreground shadow-md opacity-0 transition-opacity group-hover:opacity-100 w-48 border border-border">
+                  <Info className="size-3.5 cursor-help text-muted-foreground" />
+                  <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-48 -translate-x-1/2 rounded-lg border border-border bg-popover px-3 py-2 text-xs text-popover-foreground shadow-md opacity-0 transition-opacity group-hover:opacity-100">
                     Paste an image URL from any public source
                   </div>
                 </div>
@@ -141,8 +254,15 @@ const RegisterPage = () => {
                 type="url"
                 placeholder="https://..."
                 value={photoUrl}
-                onChange={(e) => setPhotoUrl(e.target.value)}
+                onChange={(e) => {
+                  setPhotoUrl(e.target.value);
+                  clearFieldError("photoUrl");
+                }}
+                aria-invalid={!!errors.photoUrl}
               />
+              {errors.photoUrl && (
+                <p className="text-sm text-destructive">{errors.photoUrl}</p>
+              )}
             </div>
 
             {/* Password */}
@@ -154,9 +274,13 @@ const RegisterPage = () => {
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    clearFieldError("password");
+                  }}
                   autoComplete="new-password"
                   className="pr-10"
+                  aria-invalid={!!errors.password}
                 />
                 <button
                   type="button"
@@ -171,71 +295,102 @@ const RegisterPage = () => {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-sm text-destructive">{errors.password}</p>
+              )}
 
               {/* Password Strength Indicator */}
-              <div className="mt-1 flex items-center gap-3">
-                <div className="flex flex-1 gap-1.5">
-                  {[1, 2, 3].map((level) => (
-                    <div
-                      key={level}
-                      className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
-                        level <= STRENGTH_LEVEL
-                          ? STRENGTH_COLORS[STRENGTH_LEVEL]
-                          : "bg-muted"
-                      }`}
-                    />
-                  ))}
-                </div>
-                {STRENGTH_LEVEL > 0 && (
-                  <span
-                    className={`text-xs font-medium ${
-                      STRENGTH_LEVEL === 1
-                        ? "text-destructive"
-                        : STRENGTH_LEVEL === 2
-                          ? "text-yellow-500"
-                          : "text-green-500"
-                    }`}
-                  >
-                    {STRENGTH_LABELS[STRENGTH_LEVEL]}
-                  </span>
-                )}
-              </div>
-
-              {/* Password Requirements Checklist */}
-              <div className="mt-2 flex flex-col gap-1.5">
-                {PASSWORD_CHECKS.map((check) => (
-                  <div key={check.label} className="flex items-center gap-2">
-                    {check.passed ? (
-                      <Check className="size-3.5 text-green-500" />
-                    ) : (
-                      <X className="size-3.5 text-destructive" />
-                    )}
+              {password.length > 0 && (
+                <div className="mt-1 flex items-center gap-3">
+                  <div className="flex flex-1 gap-1.5">
+                    {[1, 2, 3, 4].map((level) => (
+                      <div
+                        key={level}
+                        className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
+                          level <= STRENGTH_LEVEL
+                            ? STRENGTH_COLORS[STRENGTH_LEVEL]
+                            : "bg-muted"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  {STRENGTH_LEVEL > 0 && (
                     <span
-                      className={`text-sm ${
-                        check.passed ? "text-green-500" : "text-muted-foreground"
+                      className={`text-xs font-medium ${
+                        STRENGTH_LEVEL === 1
+                          ? "text-destructive"
+                          : STRENGTH_LEVEL === 2
+                            ? "text-yellow-500"
+                            : STRENGTH_LEVEL === 3
+                              ? "text-green-500"
+                              : "text-emerald-500"
                       }`}
                     >
-                      {check.label}
+                      {STRENGTH_LABELS[STRENGTH_LEVEL]}
                     </span>
-                  </div>
-                ))}
-              </div>
+                  )}
+                </div>
+              )}
+
+              {/* Password Requirements Checklist */}
+              {password.length > 0 && (
+                <div className="mt-2 flex flex-col gap-1.5">
+                  {PASSWORD_CHECKS.map((check) => (
+                    <div key={check.label} className="flex items-center gap-2">
+                      {check.passed ? (
+                        <Check className="size-3.5 text-green-500" />
+                      ) : (
+                        <X className="size-3.5 text-destructive" />
+                      )}
+                      <span
+                        className={`text-sm ${
+                          check.passed
+                            ? "text-green-500"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        {check.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Submit */}
-            <Button type="submit" size="lg" className="mt-2 w-full">
-              Create Account
+            <Button
+              type="submit"
+              size="lg"
+              className="mt-2 w-full"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  Creating account...
+                </>
+              ) : (
+                "Create Account"
+              )}
             </Button>
 
             {/* Divider */}
             <div className="relative flex items-center">
               <div className="flex-1 border-t border-border" />
-              <span className="px-4 text-sm text-muted-foreground">Or continue with</span>
+              <span className="px-4 text-sm text-muted-foreground">
+                Or continue with
+              </span>
               <div className="flex-1 border-t border-border" />
             </div>
 
             {/* Google Button */}
-            <Button type="button" variant="outline" size="lg" className="w-full gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="w-full gap-3"
+              disabled={loading}
+            >
               <svg className="size-5" viewBox="0 0 24 24">
                 <path
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
