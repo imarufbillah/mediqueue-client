@@ -53,9 +53,9 @@ const TRUST_BADGES = [
 const AUTO_PLAY_INTERVAL = 5000;
 
 const slideVariants = {
-  enter: { opacity: 0, y: 24 },
+  enter: { opacity: 0, y: 28 },
   center: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -24 },
+  exit: { opacity: 0, y: -28 },
 };
 
 const Hero = () => {
@@ -117,6 +117,9 @@ const Hero = () => {
         }}
       />
 
+      {/* Teal Glow Blob — Top Right */}
+      <div className="pointer-events-none absolute -top-32 -right-32 h-125 w-125 rounded-full bg-primary/10 blur-[120px]" />
+
       {/* Slide Content — Left Aligned */}
       <div className="relative z-10 flex w-full items-center px-14 sm:px-20 lg:px-24">
         <div className="max-w-2xl">
@@ -127,21 +130,26 @@ const Hero = () => {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.5, ease: "easeInOut" }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
               className="flex flex-col items-start"
             >
               {/* Overline */}
-              <span className="mb-4 text-xs font-medium uppercase tracking-widest text-primary sm:text-sm">
+              <motion.span
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.4 }}
+                className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-primary sm:text-sm"
+              >
                 {slide.overline}
-              </span>
+              </motion.span>
 
               {/* Heading */}
-              <h1 className="mb-6 font-heading text-4xl leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              <h1 className="mb-6 font-heading text-4xl leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl xl:text-7xl">
                 {slide.heading}
               </h1>
 
               {/* Subtext */}
-              <p className="mb-8 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
+              <p className="mb-10 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
                 {slide.subtext}
               </p>
 
@@ -161,17 +169,24 @@ const Hero = () => {
 
               {/* Trust Badges */}
               {slide.showBadges && (
-                <div className="mt-10 flex flex-wrap items-center gap-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                  className="mt-12 flex flex-wrap items-center gap-6 sm:gap-8"
+                >
                   {TRUST_BADGES.map((badge) => (
                     <div
                       key={badge.label}
-                      className="flex items-center gap-2 text-base text-muted-foreground"
+                      className="flex items-center gap-2.5 text-sm text-muted-foreground sm:text-base"
                     >
-                      <badge.icon className="size-4 text-primary" />
-                      <span>{badge.label}</span>
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
+                        <badge.icon className="size-4 text-primary" />
+                      </div>
+                      <span className="font-medium">{badge.label}</span>
                     </div>
                   ))}
-                </div>
+                </motion.div>
               )}
             </motion.div>
           </AnimatePresence>
@@ -179,7 +194,7 @@ const Hero = () => {
       </div>
 
       {/* Dot Indicators — Bottom Center */}
-      <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2.5">
+      <div className="absolute bottom-10 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2.5">
         {SLIDES.map((_, index) => (
           <button
             key={index}
@@ -198,7 +213,7 @@ const Hero = () => {
       <button
         onClick={prev}
         aria-label="Previous slide"
-        className={`absolute left-4 top-1/2 z-20 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-card/60 text-muted-foreground backdrop-blur-sm transition-all duration-300 hover:bg-card hover:text-foreground sm:left-8 ${
+        className={`absolute left-4 top-1/2 z-20 flex size-12 -translate-y-1/2 items-center justify-center rounded-full border border-border/50 bg-card/60 text-muted-foreground backdrop-blur-sm transition-all duration-300 hover:bg-card hover:text-foreground hover:scale-110 sm:left-8 ${
           hovered ? "opacity-100" : "opacity-0"
         }`}
       >
@@ -207,7 +222,7 @@ const Hero = () => {
       <button
         onClick={next}
         aria-label="Next slide"
-        className={`absolute right-4 top-1/2 z-20 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-card/60 text-muted-foreground backdrop-blur-sm transition-all duration-300 hover:bg-card hover:text-foreground sm:right-8 ${
+        className={`absolute right-4 top-1/2 z-20 flex size-12 -translate-y-1/2 items-center justify-center rounded-full border border-border/50 bg-card/60 text-muted-foreground backdrop-blur-sm transition-all duration-300 hover:bg-card hover:text-foreground hover:scale-110 sm:right-8 ${
           hovered ? "opacity-100" : "opacity-0"
         }`}
       >

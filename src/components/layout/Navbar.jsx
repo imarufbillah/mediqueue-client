@@ -4,10 +4,10 @@ import { useState, useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
-import { Menu, Sun, Moon, User, LogOut, ChevronDown } from "lucide-react";
+import { Menu, User, LogOut, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ThemeToggle from "@/components/ThemeToggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,7 +46,6 @@ const getServerSnapshot = () => false;
 
 const Navbar = () => {
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
   const mounted = useSyncExternalStore(
     subscribe,
     getSnapshot,
@@ -83,36 +82,39 @@ const Navbar = () => {
     <header
       className={`fixed top-0 left-0 z-50 w-full transition-all duration-300 ${
         scrolled
-          ? "bg-background/95 shadow-md backdrop-blur-lg"
-          : "bg-background/80 backdrop-blur-md"
-      } border-b border-border/50`}
+          ? "bg-background/95 shadow-md backdrop-blur-lg border-b border-border/50"
+          : "bg-background/80 backdrop-blur-md border-b border-transparent"
+      }`}
     >
       <nav className="mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center">
+        <Link
+          href="/"
+          className="flex items-center gap-0.5 transition-opacity duration-200 hover:opacity-80"
+        >
           <span className="text-2xl font-heading text-foreground">Medi</span>
-          <span className="text-2xl font-sans font-semibold text-primary">
+          <span className="text-2xl font-sans font-bold text-primary">
             Queue
           </span>
         </Link>
 
         {/* Center Navigation — Desktop */}
-        <div className="hidden items-center gap-2 md:flex">
+        <div className="hidden items-center gap-1 md:flex">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+              className={`relative rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 ${
                 isActive(link.href)
                   ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               }`}
             >
               {link.label}
               {isActive(link.href) && (
                 <motion.span
                   layoutId="navbar-indicator"
-                  className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-primary"
+                  className="absolute bottom-0.5 left-4 right-4 h-0.5 rounded-full bg-primary"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -121,29 +123,14 @@ const Navbar = () => {
         </div>
 
         {/* Right Side Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {/* Theme Toggle */}
-          {mounted && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              aria-label="Toggle theme"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              {theme === "dark" ? (
-                <Sun className="size-4" />
-              ) : (
-                <Moon className="size-4" />
-              )}
-            </Button>
-          )}
-          {!mounted && <div className="size-10" />}
+          <ThemeToggle />
 
           {/* Logged Out State */}
           {!isLoggedIn && (
             <div className="hidden items-center gap-3 sm:flex">
-              <Button variant="outline" size="sm" asChild>
+              <Button variant="ghost" size="sm" asChild>
                 <Link href="/login">Login</Link>
               </Button>
               <Button size="sm" asChild>
@@ -157,7 +144,7 @@ const Navbar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="flex items-center gap-1.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex items-center gap-1.5 rounded-full outline-none transition-transform duration-200 hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring"
                   aria-label="User menu"
                 >
                   {user.image ? (
@@ -166,24 +153,24 @@ const Navbar = () => {
                       alt={user.name}
                       width={36}
                       height={36}
-                      className="size-9 rounded-full border border-border object-cover"
+                      className="size-9 rounded-full border-2 border-border object-cover"
                     />
                   ) : (
-                    <div className="flex size-9 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+                    <div className="flex size-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
                       {getInitials(user.name)}
                     </div>
                   )}
-                  <ChevronDown className="hidden size-3 text-muted-foreground sm:block" />
+                  <ChevronDown className="hidden size-3.5 text-muted-foreground sm:block" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-44">
+              <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem asChild>
-                  <Link href="/profile" className="flex items-center gap-2">
+                  <Link href="/profile" className="flex items-center gap-2.5">
                     <User className="size-4" />
                     Profile
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2 text-destructive focus:text-destructive">
+                <DropdownMenuItem className="flex items-center gap-2.5 text-destructive focus:text-destructive">
                   <LogOut className="size-4" />
                   Logout
                 </DropdownMenuItem>
@@ -208,28 +195,28 @@ const Navbar = () => {
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent
           side="left"
-          className="w-72 border-r border-border/50 bg-background/95 backdrop-blur-lg"
+          className="w-80 border-r border-border/50 bg-background/95 backdrop-blur-lg"
         >
-          <SheetHeader className="border-b border-border/50 pb-4">
-            <SheetTitle className="flex items-center gap-1.5">
+          <SheetHeader className="border-b border-border/50 pb-5">
+            <SheetTitle className="flex items-center gap-1">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
               </span>
-              <span className="font-heading text-foreground">Medi</span>
-              <span className="font-sans font-semibold text-primary">
+              <span className="text-lg font-heading text-foreground">Medi</span>
+              <span className="text-lg font-sans font-bold text-primary">
                 Queue
               </span>
             </SheetTitle>
           </SheetHeader>
 
-          <div className="flex flex-col gap-1 pt-4">
+          <div className="flex flex-col gap-1 pt-6">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className={`rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ${
+                className={`rounded-xl px-4 py-3 text-base font-medium transition-colors duration-200 ${
                   isActive(link.href)
                     ? "bg-accent text-primary"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -242,13 +229,13 @@ const Navbar = () => {
 
           {/* Mobile Auth Buttons */}
           {!isLoggedIn && (
-            <div className="mt-6 flex flex-col gap-2 border-t border-border/50 pt-6">
-              <Button variant="outline" asChild>
+            <div className="mt-8 flex flex-col gap-3 border-t border-border/50 pt-8">
+              <Button variant="outline" size="lg" asChild>
                 <Link href="/login" onClick={() => setMobileOpen(false)}>
                   Login
                 </Link>
               </Button>
-              <Button asChild>
+              <Button size="lg" asChild>
                 <Link href="/register" onClick={() => setMobileOpen(false)}>
                   Register
                 </Link>
@@ -258,17 +245,17 @@ const Navbar = () => {
 
           {/* Mobile Logged In */}
           {isLoggedIn && (
-            <div className="mt-6 flex flex-col gap-2 border-t border-border/50 pt-6">
+            <div className="mt-8 flex flex-col gap-1 border-t border-border/50 pt-8">
               <Link
                 href="/profile"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+                className="flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
               >
-                <User className="size-4" />
+                <User className="size-5" />
                 Profile
               </Link>
-              <button className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-destructive hover:bg-destructive/10">
-                <LogOut className="size-4" />
+              <button className="flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-destructive hover:bg-destructive/10">
+                <LogOut className="size-5" />
                 Logout
               </button>
             </div>

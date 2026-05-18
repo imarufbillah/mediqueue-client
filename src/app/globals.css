@@ -180,6 +180,9 @@
     @apply bg-background text-foreground;
   }
   html {
-    @apply font-sans;
+    @apply scroll-smooth font-sans;
+  }
+  ::selection {
+    @apply bg-primary/20 text-foreground;
   }
 }

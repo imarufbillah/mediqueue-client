@@ -36,7 +36,7 @@ export default function RootLayout({ children }) {
       className={`${dmSerifDisplay.variable} ${plusJakartaSans.variable} ${jetBrainsMono.variable} antialiased`}
       suppressHydrationWarning
     >
-      <body className="">
+      <body className="transition-colors duration-300">
         <ThemeProvider>
           <Navbar />
           <main>{children}</main>
