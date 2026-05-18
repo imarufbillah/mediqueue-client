@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useSyncExternalStore } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -20,13 +20,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-
-// Hardcoded auth state — replace with real auth later
-const isLoggedIn = false;
-const user = {
-  name: "John Doe",
-  image: "",
-};
+import { authClient } from "@/lib/auth-client";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -39,18 +33,15 @@ const AUTH_LINKS = [
   { href: "/my-bookings", label: "My Booked Sessions" },
 ];
 
-// Hydration-safe mounted check
-const subscribe = () => () => {};
-const getSnapshot = () => true;
-const getServerSnapshot = () => false;
-
 const Navbar = () => {
+  const { data: session } = authClient.useSession();
+  console.log(session);
+  const isLoggedIn = !!session?.user;
+
+  const user = session?.user || { name: "User", image: null };
+
   const pathname = usePathname();
-  const mounted = useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    getServerSnapshot,
-  );
+
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
