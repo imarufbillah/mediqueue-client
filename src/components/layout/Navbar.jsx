@@ -87,22 +87,22 @@ const Navbar = () => {
           : "bg-background/80 backdrop-blur-md"
       } border-b border-border/50`}
     >
-      <nav className="mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+      <nav className="mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center">
-          <span className="text-xl font-heading text-foreground">Medi</span>
-          <span className="text-xl font-sans font-semibold text-primary">
+          <span className="text-2xl font-heading text-foreground">Medi</span>
+          <span className="text-2xl font-sans font-semibold text-primary">
             Queue
           </span>
         </Link>
 
         {/* Center Navigation — Desktop */}
-        <div className="hidden items-center gap-1 md:flex">
+        <div className="hidden items-center gap-2 md:flex">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={`relative px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+              className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 ${
                 isActive(link.href)
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground"
@@ -121,7 +121,7 @@ const Navbar = () => {
         </div>
 
         {/* Right Side Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {/* Theme Toggle */}
           {mounted && (
             <Button
@@ -138,11 +138,11 @@ const Navbar = () => {
               )}
             </Button>
           )}
-          {!mounted && <div className="size-8" />}
+          {!mounted && <div className="size-10" />}
 
           {/* Logged Out State */}
           {!isLoggedIn && (
-            <div className="hidden items-center gap-2 sm:flex">
+            <div className="hidden items-center gap-3 sm:flex">
               <Button variant="outline" size="sm" asChild>
                 <Link href="/login">Login</Link>
               </Button>
@@ -164,12 +164,12 @@ const Navbar = () => {
                     <Image
                       src={user.image}
                       alt={user.name}
-                      width={32}
-                      height={32}
-                      className="size-8 rounded-full border border-border object-cover"
+                      width={36}
+                      height={36}
+                      className="size-9 rounded-full border border-border object-cover"
                     />
                   ) : (
-                    <div className="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+                    <div className="flex size-9 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
                       {getInitials(user.name)}
                     </div>
                   )}

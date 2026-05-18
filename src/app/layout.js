@@ -38,10 +38,8 @@ export default function RootLayout({ children }) {
     >
       <body className="">
         <ThemeProvider>
-          <Navbar/>
-          <main className="pt-16">
-            {children}
-            </main>
+          <Navbar />
+          <main>{children}</main>
         </ThemeProvider>
       </body>
     </html>
