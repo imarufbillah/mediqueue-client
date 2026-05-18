@@ -131,10 +131,10 @@ const Navbar = () => {
           {!isLoggedIn && (
             <div className="hidden items-center gap-3 sm:flex">
               <Button variant="ghost" size="sm" asChild>
-                <Link href="/login">Login</Link>
+                <Link href="/sign-in">Sign in</Link>
               </Button>
               <Button size="sm" asChild>
-                <Link href="/register">Register</Link>
+                <Link href="/sign-up">Sign up</Link>
               </Button>
             </div>
           )}
@@ -231,13 +231,13 @@ const Navbar = () => {
           {!isLoggedIn && (
             <div className="mt-8 flex flex-col gap-3 border-t border-border/50 pt-8">
               <Button variant="outline" size="lg" asChild>
-                <Link href="/login" onClick={() => setMobileOpen(false)}>
-                  Login
+                <Link href="/sign-in" onClick={() => setMobileOpen(false)}>
+                  Sign in
                 </Link>
               </Button>
               <Button size="lg" asChild>
-                <Link href="/register" onClick={() => setMobileOpen(false)}>
-                  Register
+                <Link href="/sign-up" onClick={() => setMobileOpen(false)}>
+                  Sign up
                 </Link>
               </Button>
             </div>

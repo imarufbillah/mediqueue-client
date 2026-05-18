@@ -37,7 +37,7 @@ const SLIDES = [
     subtext:
       "Every tutor lists their teaching mode. Filter by your preferred style and location. Learning should fit your life, not the other way around.",
     buttons: [
-      { label: "Get Started Free", href: "/register", variant: "default" },
+      { label: "Get Started Free", href: "/sign-up", variant: "default" },
     ],
     showBadges: false,
     image: "/hero-3.png",

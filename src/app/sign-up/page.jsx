@@ -19,7 +19,7 @@ const STRENGTH_COLORS = [
   "bg-emerald-500",
 ];
 
-const RegisterPage = () => {
+const SignUpPage = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -87,7 +87,7 @@ const RegisterPage = () => {
     }
   };
 
-  const handleRegister = async (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
 
     if (!validate()) return;
@@ -108,7 +108,7 @@ const RegisterPage = () => {
       }
 
       toast.success("Account created successfully!");
-      router.push("/login");
+      router.push("/sign-in");
     } catch (err) {
       toast.error("Something went wrong. Please try again later.");
     } finally {
@@ -197,7 +197,7 @@ const RegisterPage = () => {
           </p>
 
           {/* Form */}
-          <form onSubmit={handleRegister} className="flex flex-col gap-5">
+          <form onSubmit={handleSignUp} className="flex flex-col gap-5">
             {/* Full Name */}
             <div className="flex flex-col gap-2">
               <Label htmlFor="name">Full Name</Label>
@@ -413,11 +413,11 @@ const RegisterPage = () => {
             </Button>
           </form>
 
-          {/* Login link */}
+          {/* Sign in link */}
           <p className="mt-8 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
             <Link
-              href="/login"
+              href="/sign-in"
               className="font-medium text-primary transition-colors hover:text-primary/80"
             >
               Sign in
@@ -429,4 +429,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default SignUpPage;

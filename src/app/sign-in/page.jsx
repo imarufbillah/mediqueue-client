@@ -2,15 +2,77 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Eye, EyeOff, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff, Star, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { authClient } from "@/lib/auth-client";
 
-const LoginPage = () => {
+const SignInPage = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    if (!password) {
+      newErrors.password = "Password is required";
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const clearFieldError = (field) => {
+    if (errors[field]) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  };
+
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+
+    if (!validate()) return;
+
+    setLoading(true);
+
+    try {
+      const { error } = await authClient.signIn.email({
+        email: email.trim(),
+        password,
+      });
+
+      if (error) {
+        toast.error(error.message || "Sign in failed. Please try again.");
+        return;
+      }
+
+      toast.success("Signed in successfully!");
+      router.push("/");
+    } catch (err) {
+      toast.error("Something went wrong. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex min-h-dvh">
@@ -31,7 +93,9 @@ const LoginPage = () => {
           {/* Logo */}
           <div className="mb-10 flex items-center gap-0.5">
             <span className="text-3xl font-heading text-foreground">Medi</span>
-            <span className="text-3xl font-sans font-bold text-primary">Queue</span>
+            <span className="text-3xl font-sans font-bold text-primary">
+              Queue
+            </span>
           </div>
 
           {/* Display heading */}
@@ -39,7 +103,8 @@ const LoginPage = () => {
             Your next great tutor is one click away.
           </h2>
           <p className="max-w-xs text-base text-muted-foreground">
-            Join thousands of students finding the perfect learning match every day.
+            Join thousands of students finding the perfect learning match every
+            day.
           </p>
         </div>
 
@@ -51,9 +116,12 @@ const LoginPage = () => {
             ))}
           </div>
           <p className="max-w-xs text-center text-sm italic text-muted-foreground">
-            &ldquo;MediQueue made finding a tutor effortless. Booked my first session in under a minute.&rdquo;
+            &ldquo;MediQueue made finding a tutor effortless. Booked my first
+            session in under a minute.&rdquo;
           </p>
-          <span className="text-xs font-medium text-foreground">— Sarah K., Medical Student</span>
+          <span className="text-xs font-medium text-foreground">
+            — Sarah K., Medical Student
+          </span>
         </div>
       </div>
 
@@ -63,7 +131,9 @@ const LoginPage = () => {
           {/* Mobile logo */}
           <div className="mb-8 flex items-center gap-0.5 lg:hidden">
             <span className="text-2xl font-heading text-foreground">Medi</span>
-            <span className="text-2xl font-sans font-bold text-primary">Queue</span>
+            <span className="text-2xl font-sans font-bold text-primary">
+              Queue
+            </span>
           </div>
 
           {/* Header */}
@@ -75,7 +145,7 @@ const LoginPage = () => {
           </p>
 
           {/* Form */}
-          <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-6">
+          <form onSubmit={handleSignIn} className="flex flex-col gap-6">
             {/* Email */}
             <div className="flex flex-col gap-2">
               <Label htmlFor="email">Email address</Label>
@@ -84,9 +154,16 @@ const LoginPage = () => {
                 type="email"
                 placeholder="you@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  clearFieldError("email");
+                }}
                 autoComplete="email"
+                aria-invalid={!!errors.email}
               />
+              {errors.email && (
+                <p className="text-sm text-destructive">{errors.email}</p>
+              )}
             </div>
 
             {/* Password */}
@@ -98,9 +175,13 @@ const LoginPage = () => {
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    clearFieldError("password");
+                  }}
                   autoComplete="current-password"
                   className="pr-10"
+                  aria-invalid={!!errors.password}
                 />
                 <button
                   type="button"
@@ -115,6 +196,9 @@ const LoginPage = () => {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-sm text-destructive">{errors.password}</p>
+              )}
               <div className="flex justify-end">
                 <Link
                   href="/forgot-password"
@@ -126,19 +210,39 @@ const LoginPage = () => {
             </div>
 
             {/* Submit */}
-            <Button type="submit" size="lg" className="w-full">
-              Sign In
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                "Sign In"
+              )}
             </Button>
 
             {/* Divider */}
             <div className="relative flex items-center">
               <div className="flex-1 border-t border-border" />
-              <span className="px-4 text-sm text-muted-foreground">Or continue with</span>
+              <span className="px-4 text-sm text-muted-foreground">
+                Or continue with
+              </span>
               <div className="flex-1 border-t border-border" />
             </div>
 
             {/* Google Button */}
-            <Button type="button" variant="outline" size="lg" className="w-full gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="w-full gap-3"
+              disabled={loading}
+            >
               <svg className="size-5" viewBox="0 0 24 24">
                 <path
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -161,14 +265,14 @@ const LoginPage = () => {
             </Button>
           </form>
 
-          {/* Register link */}
+          {/* Sign up link */}
           <p className="mt-8 text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
             <Link
-              href="/register"
+              href="/sign-up"
               className="font-medium text-primary transition-colors hover:text-primary/80"
             >
-              Register
+              Sign up
             </Link>
           </p>
         </div>
@@ -177,4 +281,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignInPage;
