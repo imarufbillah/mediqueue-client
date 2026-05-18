@@ -1,24 +1,62 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
-import { MoonIcon, SunIcon } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+
+// Hydration-safe mounted check
+const subscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
 
-  // Avoid hydration mismatch — render only after mount
-  useEffect(() => setMounted(true), []);
-  if (!mounted) return <div className="w-9 h-9" />; // placeholder same size
+  if (!mounted) return <div className="size-10" />;
+
+  const isDark = theme === "dark";
+
   return (
-    <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      aria-label="Toggle theme"
-      className="btn btn-secondary btn-sm"
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      className="relative overflow-hidden text-muted-foreground hover:text-foreground"
     >
-      {theme === "dark" ? <SunIcon /> : <MoonIcon />}
-    </button>
+      <AnimatePresence mode="wait" initial={false}>
+        {isDark ? (
+          <motion.span
+            key="sun"
+            initial={{ rotate: -90, scale: 0, opacity: 0 }}
+            animate={{ rotate: 0, scale: 1, opacity: 1 }}
+            exit={{ rotate: 90, scale: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="absolute"
+          >
+            <Sun className="size-[1.2rem]" />
+          </motion.span>
+        ) : (
+          <motion.span
+            key="moon"
+            initial={{ rotate: 90, scale: 0, opacity: 0 }}
+            animate={{ rotate: 0, scale: 1, opacity: 1 }}
+            exit={{ rotate: -90, scale: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="absolute"
+          >
+            <Moon className="size-[1.2rem]" />
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </Button>
   );
 };
 
