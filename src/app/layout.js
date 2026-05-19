@@ -9,6 +9,7 @@ import {
 import "./globals.css";
 import ThemeProvider from "@/providers/ThemeProvider";
 import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import { Toaster } from "sonner";
 
 const dmSerifDisplay = DM_Serif_Display({
@@ -44,6 +45,7 @@ export default function RootLayout({ children }) {
         <ThemeProvider>
           <Navbar />
           <main>{children}</main>
+          <Footer />
           <Toaster position="top-right" richColors closeButton />
         </ThemeProvider>
       </body>
