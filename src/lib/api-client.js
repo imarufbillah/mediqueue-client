@@ -87,3 +87,21 @@ export const newBooking = async (bookingData) => {
 
   return res.json();
 };
+
+export const cancelBooking = async (id) => {
+  const res = await fetch(`${API_BASE_URL}/my-bookings/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${await jwtToken()}`,
+    },
+    body: JSON.stringify({ status: "cancelled" }),
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    throw new Error(error.message || "Failed to cancel booking");
+  }
+
+  return res.json();
+};

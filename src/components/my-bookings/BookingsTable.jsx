@@ -59,7 +59,7 @@ const BookingsTable = ({ bookings, onCancel }) => {
             <TableBody>
               {bookings.map((booking) => (
                 <TableRow
-                  key={booking.id}
+                  key={booking._id}
                   className={`transition-colors hover:bg-accent/50 ${
                     booking.status === "cancelled" ? "opacity-60" : ""
                   }`}

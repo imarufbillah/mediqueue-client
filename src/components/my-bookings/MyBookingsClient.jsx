@@ -16,7 +16,11 @@ const MyBookingsClient = ({ myBookings }) => {
   return (
     <>
       <BookingsTable bookings={myBookings} onCancel={handleCancel} />
-      <CancelDialog open={cancelOpen} onOpenChange={setCancelOpen} />
+      <CancelDialog
+        selectedBooking={selectedBooking}
+        open={cancelOpen}
+        onOpenChange={setCancelOpen}
+      />
     </>
   );
 };
