@@ -15,9 +15,7 @@ const BookingPanel = ({ tutor }) => {
   return (
     <div className="lg:sticky lg:top-24 lg:self-start">
       <div className="flex flex-col gap-6 rounded-2xl border border-border bg-card p-6">
-        <h3 className="font-heading text-xl text-foreground">
-          Book a Session
-        </h3>
+        <h3 className="font-heading text-xl text-foreground">Book a Session</h3>
 
         {/* Fee */}
         <div className="flex items-baseline gap-1">
@@ -65,7 +63,11 @@ const BookingPanel = ({ tutor }) => {
             </Button>
           </div>
         ) : (
-          <Button size="lg" className="w-full" onClick={() => setBookingOpen(true)}>
+          <Button
+            size="lg"
+            className="w-full"
+            onClick={() => setBookingOpen(true)}
+          >
             Book This Session
           </Button>
         )}
@@ -81,8 +83,6 @@ const BookingPanel = ({ tutor }) => {
       <BookingModal
         open={bookingOpen}
         onOpenChange={setBookingOpen}
-        tutorId={tutor._id || tutor.id || ""}
-        tutorName={tutor.name}
         tutor={tutor}
       />
     </div>

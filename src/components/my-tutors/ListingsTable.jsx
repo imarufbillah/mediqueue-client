@@ -54,7 +54,7 @@ const ListingsTable = ({ tutors, onEdit, onDelete }) => {
           <TableBody>
             {tutors.map((tutor) => (
               <TableRow
-                key={tutor.id}
+                key={tutor._id}
                 className="transition-colors hover:bg-accent/50"
               >
                 {/* Tutor */}

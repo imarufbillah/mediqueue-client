@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { newBooking } from "@/lib/api-client";
+import { newBooking, useSession } from "@/lib/api-client";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import TokenCard from "@/components/booking/TokenCard";
@@ -26,15 +26,19 @@ const generateRef = () => {
   return `MQ-2026-${code}`;
 };
 
-const BookingModal = ({
-  open,
-  onOpenChange,
-  tutorId,
-  tutorName,
-  tutor,
-  studentEmail = "maruf@example.com",
-}) => {
+const BookingModal = ({ open, onOpenChange, tutor }) => {
+  const {
+    name: tutorName,
+    photoUrl: tutorImage,
+    subject,
+    _id: tutorId,
+  } = tutor;
   const { data: session } = authClient.useSession();
+  const {
+    name: studentName,
+    email: studentEmail,
+    id: studentId,
+  } = session?.user || {};
 
   const [loading, setLoading] = useState(false);
   const [booked, setBooked] = useState(false);
@@ -48,14 +52,20 @@ const BookingModal = ({
     const data = Object.fromEntries(formData.entries());
 
     const today = format(new Date(), "MMM dd, yyyy");
+    const bookingData = {
+      studentId,
+      tutor: {
+        name: tutorName,
+        photo: tutorImage,
+        subject,
+      },
+      student: { name: studentName, email: studentEmail },
+      bookedOn: today,
+      status: "active",
+    };
 
     try {
-      await newBooking({
-        ...data,
-        studentId: session?.user?.id,
-        bookingDate: today,
-        status: "active",
-      });
+      await newBooking(bookingData);
       toast.success("Tutor booked successfully!");
       setBookingData({
         studentName: data.studentName,

@@ -51,6 +51,7 @@ export const getLimitedTutors = async (limit = 6) => {
   return res.json();
 };
 
+// Get tutors by current user
 export const getTutorsByCurrentUser = async () => {
   const res = await fetch(`${API_BASE_URL}/my-tutors`, {
     headers: {
@@ -61,6 +62,21 @@ export const getTutorsByCurrentUser = async () => {
   if (!res.ok) {
     const error = await res.json().catch(() => ({}));
     throw new Error(error.message || "Failed to get tutors");
+  }
+
+  return res.json();
+};
+
+export const getBookingsByCurrentUser = async () => {
+  const res = await fetch(`${API_BASE_URL}/my-bookings`, {
+    headers: {
+      Authorization: `Bearer ${await jwtToken()}`,
+    },
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    throw new Error(error.message || "Failed to get bookings");
   }
 
   return res.json();

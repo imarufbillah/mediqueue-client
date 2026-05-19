@@ -2,9 +2,12 @@ import Link from "next/link";
 import { CalendarX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MyBookingsClient from "@/components/my-bookings/MyBookingsClient";
+import { getBookingsByCurrentUser } from "@/lib/data";
 
-const MyBookingsPage = () => {
-  const showEmpty = false; // Toggle to true to preview empty state
+const MyBookingsPage = async () => {
+  const myBookings = await getBookingsByCurrentUser();
+
+  const showEmpty = myBookings.length === 0;
 
   return (
     <div className="min-h-dvh bg-background pb-20 pt-28">
@@ -37,7 +40,7 @@ const MyBookingsPage = () => {
             </Button>
           </div>
         ) : (
-          <MyBookingsClient />
+          <MyBookingsClient myBookings={myBookings} />
         )}
       </div>
     </div>

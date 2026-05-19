@@ -43,7 +43,6 @@ const EditDialog = ({ open, onOpenChange, tutor: selectedTutor }) => {
 
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    console.log(selectedTutor);
 
     try {
       await updateTutor(selectedTutor._id, data);

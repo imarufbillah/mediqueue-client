@@ -11,70 +11,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const FAKE_BOOKINGS = [
-  {
-    id: "1",
-    tutor: {
-      name: "Dr. Sarah Ahmed",
-      photo: "https://i.pravatar.cc/400?img=47",
-      subject: "Mathematics",
-    },
-    student: { name: "Maruf Billah", email: "maruf@example.com" },
-    bookedOn: "May 12, 2025",
-    status: "active",
-  },
-  {
-    id: "2",
-    tutor: {
-      name: "Prof. Karim Hossain",
-      photo: "https://i.pravatar.cc/400?img=12",
-      subject: "Physics",
-    },
-    student: { name: "Maruf Billah", email: "maruf@example.com" },
-    bookedOn: "May 10, 2025",
-    status: "active",
-  },
-  {
-    id: "3",
-    tutor: {
-      name: "Nadia Rahman",
-      photo: "https://i.pravatar.cc/400?img=32",
-      subject: "Chemistry",
-    },
-    student: { name: "Maruf Billah", email: "maruf@example.com" },
-    bookedOn: "Apr 28, 2025",
-    status: "cancelled",
-  },
-  {
-    id: "4",
-    tutor: {
-      name: "Tanvir Islam",
-      photo: "https://i.pravatar.cc/400?img=53",
-      subject: "Computer Science",
-    },
-    student: { name: "Maruf Billah", email: "maruf@example.com" },
-    bookedOn: "May 15, 2025",
-    status: "active",
-  },
-  {
-    id: "5",
-    tutor: {
-      name: "Fatima Begum",
-      photo: "https://i.pravatar.cc/400?img=26",
-      subject: "English",
-    },
-    student: { name: "Maruf Billah", email: "maruf@example.com" },
-    bookedOn: "Apr 20, 2025",
-    status: "cancelled",
-  },
-];
-
-const BookingsTable = ({ onCancel }) => {
-  const bookings = FAKE_BOOKINGS;
-
+const BookingsTable = ({ bookings, onCancel }) => {
   const totalCount = bookings.length;
   const activeCount = bookings.filter((b) => b.status === "active").length;
-  const cancelledCount = bookings.filter((b) => b.status === "cancelled").length;
+  const cancelledCount = bookings.filter(
+    (b) => b.status === "cancelled",
+  ).length;
 
   return (
     <>
