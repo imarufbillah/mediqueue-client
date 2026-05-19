@@ -23,3 +23,15 @@ export const getTutorById = async (id) => {
 
   return res.json();
 };
+
+// Get limited tutors
+export const getLimitedTutors = async (limit = 6) => {
+  const res = await fetch(`${API_BASE_URL}/tutors?limit=${limit}`);
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    throw new Error(error.message || "Failed to get tutors");
+  }
+
+  return res.json();
+};
