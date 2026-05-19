@@ -4,6 +4,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
 @theme inline {
   --font-heading: var(--font-dm-serif-display);
   --font-sans: var(--font-plus-jakarta-sans);
