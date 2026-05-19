@@ -11,6 +11,7 @@ import ThemeProvider from "@/providers/ThemeProvider";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Toaster } from "sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const dmSerifDisplay = DM_Serif_Display({
   variable: "--font-dm-serif-display",
@@ -43,10 +44,12 @@ export default function RootLayout({ children }) {
     >
       <body className="transition-colors duration-300">
         <ThemeProvider>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
-          <Toaster position="top-right" richColors closeButton />
+          <TooltipProvider delayDuration={300}>
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+            <Toaster position="top-right" richColors closeButton />
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>
