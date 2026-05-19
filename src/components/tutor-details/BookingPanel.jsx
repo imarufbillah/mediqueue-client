@@ -83,6 +83,7 @@ const BookingPanel = ({ tutor }) => {
         onOpenChange={setBookingOpen}
         tutorId={tutor._id || tutor.id || ""}
         tutorName={tutor.name}
+        tutor={tutor}
       />
     </div>
   );

@@ -68,3 +68,22 @@ export const deleteTutor = async (id) => {
 
   return res.json();
 };
+
+// Book a tutor
+export const newBooking = async (bookingData) => {
+  const res = await fetch(`${API_BASE_URL}/bookings`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${await jwtToken()}`,
+    },
+    body: JSON.stringify(bookingData),
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    throw new Error(error.message || "Failed to book tutor");
+  }
+
+  return res.json();
+};
