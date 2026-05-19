@@ -51,7 +51,7 @@ const TutorDetailsPage = async ({ params }) => {
               {/* Photo */}
               <div className="shrink-0">
                 <Image
-                  src={tutor.photo}
+                  src={tutor.photoUrl}
                   alt={tutor.name}
                   width={96}
                   height={96}

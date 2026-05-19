@@ -25,7 +25,11 @@ export const getTutors = async () => {
 
 // Get tutor by id
 export const getTutorById = async (id) => {
-  const res = await fetch(`${API_BASE_URL}/tutors/${id}`);
+  const res = await fetch(`${API_BASE_URL}/tutors/${id}`, {
+    headers: {
+      Authorization: `Bearer ${await jwtToken()}`,
+    },
+  });
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({}));

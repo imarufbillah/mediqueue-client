@@ -11,7 +11,7 @@ const TutorCard = ({ tutor }) => {
   const {
     _id,
     name,
-    photo,
+    photoUrl: photo,
     subject,
     teachingMode,
     location,
