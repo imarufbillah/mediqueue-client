@@ -1,11 +1,13 @@
-const CardSlotIndicator = ({ slots, totalSlots }) => {
-  const percentage = totalSlots > 0 ? (slots / totalSlots) * 100 : 0;
+const CardSlotIndicator = ({ slots = 0, totalSlots = 1 }) => {
+  const safeSlots = Number(slots) || 0;
+  const safeTotal = Number(totalSlots) || 1;
+  const percentage = safeTotal > 0 ? (safeSlots / safeTotal) * 100 : 0;
   const radius = 18;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   const getColor = () => {
-    if (slots === 0) return "text-destructive";
+    if (safeSlots === 0) return "text-destructive";
     if (percentage <= 50) return "text-yellow-500";
     return "text-primary";
   };
@@ -37,7 +39,7 @@ const CardSlotIndicator = ({ slots, totalSlots }) => {
           />
         </svg>
         <span className={`absolute text-sm font-semibold ${getColor()}`}>
-          {slots}
+          {safeSlots}
         </span>
       </div>
       <span className="text-[0.65rem] uppercase tracking-wider text-muted-foreground">

@@ -232,7 +232,7 @@ const TutorsClient = ({ tutors }) => {
               className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
             >
               {filteredTutors.map((tutor) => (
-                <motion.div key={tutor.name} variants={cardVariants}>
+                <motion.div key={tutor._id} variants={cardVariants}>
                   <TutorCard tutor={tutor} />
                 </motion.div>
               ))}

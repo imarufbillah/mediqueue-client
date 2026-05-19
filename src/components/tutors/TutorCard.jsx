@@ -39,12 +39,20 @@ const TutorCard = ({ tutor }) => {
     >
       {/* Image Area */}
       <div className="relative h-48 w-full overflow-hidden">
-        <Image
-          src={photo}
-          alt={name}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+        {photo ? (
+          <Image
+            src={photo}
+            alt={name}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-muted">
+            <span className="text-3xl font-heading text-muted-foreground">
+              {name?.charAt(0) || "T"}
+            </span>
+          </div>
+        )}
         {/* Gradient overlay at bottom */}
         <div className="absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-card to-transparent" />
 
