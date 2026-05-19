@@ -10,8 +10,25 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { deleteTutor } from "@/lib/api-client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
-const DeleteDialog = ({ open, onOpenChange }) => {
+const DeleteDialog = ({ open, onOpenChange, tutor: selectedTutor }) => {
+  const router = useRouter();
+
+  const handleDelete = async () => {
+    onOpenChange(false);
+
+    try {
+      await deleteTutor(selectedTutor._id);
+      toast.success("Tutor deleted successfully!");
+      router.refresh();
+    } catch (error) {
+      toast.error("Failed to delete tutor. Please try again.");
+    }
+  };
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
@@ -27,7 +44,7 @@ const DeleteDialog = ({ open, onOpenChange }) => {
         <AlertDialogFooter>
           <AlertDialogCancel>Keep Listing</AlertDialogCancel>
           <AlertDialogAction
-            onClick={() => onOpenChange(false)}
+            onClick={handleDelete}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
             Delete

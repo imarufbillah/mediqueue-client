@@ -37,7 +37,7 @@ const TEACHING_MODES = ["Online", "Offline", "Both"];
 
 const EditDialog = ({ open, onOpenChange, tutor: selectedTutor }) => {
   const router = useRouter();
-  const handleSubmit = async (e) => {
+  const handleEdit = async (e) => {
     e.preventDefault();
     onOpenChange(false);
 
@@ -62,7 +62,7 @@ const EditDialog = ({ open, onOpenChange, tutor: selectedTutor }) => {
           </DialogTitle>
         </DialogHeader>
         {selectedTutor && (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5 pt-2">
+          <form onSubmit={handleEdit} className="flex flex-col gap-5 pt-2">
             <div className="flex flex-col gap-2">
               <Label htmlFor="edit-name">Tutor Name</Label>
               <Input

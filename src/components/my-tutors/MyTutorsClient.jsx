@@ -32,7 +32,11 @@ const MyTutorsClient = ({ myTutors }) => {
         onOpenChange={setEditOpen}
         tutor={selectedTutor}
       />
-      <DeleteDialog open={deleteOpen} onOpenChange={setDeleteOpen} />
+      <DeleteDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        tutor={selectedTutor}
+      />
     </>
   );
 };

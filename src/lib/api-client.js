@@ -52,3 +52,19 @@ export const updateTutor = async (id, tutorData) => {
 
   return res.json();
 };
+
+export const deleteTutor = async (id) => {
+  const res = await fetch(`${API_BASE_URL}/my-tutors/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${await jwtToken()}`,
+    },
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    throw new Error(error.message || "Failed to delete tutor");
+  }
+
+  return res.json();
+};
