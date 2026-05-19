@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -14,82 +12,23 @@ import {
   Shield,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SlotIndicator from "@/components/tutor-details/SlotIndicator";
+import { getTutorById } from "@/lib/data";
 
-// Fake tutor data
-const tutor = {
-  name: "Dr. Sarah Ahmed",
-  photo: "https://i.pravatar.cc/400?img=47",
-  subject: "Mathematics",
-  teachingMode: "Online",
-  location: "Dhaka, Bangladesh",
-  hourlyFee: 25,
-  availableDays: "Sun – Thu",
-  timeSlot: "5:00 PM – 8:00 PM",
-  startDate: "Jun 15, 2025",
-  institution: "University of Dhaka",
-  experience: 8,
-  totalSlots: 10,
-  slotsRemaining: 7,
-  sessionsCompleted: 142,
-  rating: 4.9,
-  bio: "I am a passionate mathematics educator with over 8 years of experience teaching students from high school through university level. My approach focuses on building strong foundational understanding rather than rote memorization. I specialize in calculus, linear algebra, and statistics, and I tailor each session to the student's learning pace and goals. Whether you're preparing for board exams or need help with university coursework, I'm here to make math feel approachable and even enjoyable.",
-};
-
-// Slot indicator ring
-const SlotRing = ({ slots, totalSlots }) => {
-  const percentage = totalSlots > 0 ? (slots / totalSlots) * 100 : 0;
-  const radius = 28;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (percentage / 100) * circumference;
-
-  const getColor = () => {
-    if (slots === 0) return "text-destructive";
-    if (percentage <= 50) return "text-yellow-500";
-    return "text-primary";
-  };
-
-  return (
-    <div className="flex flex-col items-center gap-2">
-      <div className="relative flex size-20 items-center justify-center">
-        <svg className="size-20 -rotate-90" viewBox="0 0 64 64">
-          <circle
-            cx="32"
-            cy="32"
-            r={radius}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="4"
-            className="text-muted"
-          />
-          <circle
-            cx="32"
-            cy="32"
-            r={radius}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="4"
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={strokeDashoffset}
-            className={`transition-all duration-500 ${getColor()}`}
-          />
-        </svg>
-        <span className={`absolute text-xl font-bold ${getColor()}`}>
-          {slots}
-        </span>
-      </div>
-      <span className="text-sm text-muted-foreground">slots remaining</span>
-    </div>
-  );
-};
-
-const TutorDetailsPage = () => {
+const TutorDetailsPage = async ({ params }) => {
+  const { id: tutorId } = await params;
+  console.log(tutorId);
+  const tutor = await getTutorById(tutorId);
   const isFull = tutor.slotsRemaining === 0;
   const isFuture = new Date(tutor.startDate) > new Date();
 
   const infoItems = [
     { icon: Building2, label: "Institution", value: tutor.institution },
-    { icon: Briefcase, label: "Experience", value: `${tutor.experience} years` },
+    {
+      icon: Briefcase,
+      label: "Experience",
+      value: `${tutor.experience} years`,
+    },
     { icon: Clock, label: "Available Days", value: tutor.availableDays },
     { icon: Clock, label: "Time Slot", value: tutor.timeSlot },
     { icon: Monitor, label: "Teaching Mode", value: tutor.teachingMode },
@@ -146,24 +85,19 @@ const TutorDetailsPage = () => {
                   <span>{tutor.location}</span>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`size-4 ${
-                          i < Math.floor(tutor.rating)
-                            ? "fill-primary text-primary"
-                            : "text-muted"
-                        }`}
-                      />
-                    ))}
-                    <span className="ml-1.5 text-sm font-medium text-foreground">
-                      {tutor.rating}
-                    </span>
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    · {tutor.sessionsCompleted} sessions completed
+                <div className="flex items-center gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`size-4 ${
+                        i < Math.floor(tutor.rating)
+                          ? "fill-primary text-primary"
+                          : "text-muted"
+                      }`}
+                    />
+                  ))}
+                  <span className="ml-1.5 text-sm font-medium text-foreground">
+                    {tutor.rating}
                   </span>
                 </div>
               </div>
@@ -216,7 +150,7 @@ const TutorDetailsPage = () => {
 
               {/* Slot Ring */}
               <div className="flex justify-center py-2">
-                <SlotRing
+                <SlotIndicator
                   slots={tutor.slotsRemaining}
                   totalSlots={tutor.totalSlots}
                 />

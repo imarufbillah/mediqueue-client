@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import TutorCard from "@/components/tutor/TutorCard";
+import TutorCard from "@/components/tutor/tutor-card/TutorCard";
 
 const FAKE_TUTORS = [
   {
@@ -172,9 +172,7 @@ const TutorsPage = () => {
   const hasFilters = search || fromDate || toDate;
 
   // Fake filtering for design
-  const filteredTutors = search.toLowerCase() === "xyz"
-    ? []
-    : FAKE_TUTORS;
+  const filteredTutors = search.toLowerCase() === "xyz" ? [] : FAKE_TUTORS;
 
   const resetFilters = () => {
     setSearch("");
@@ -286,7 +284,11 @@ const TutorsPage = () => {
                 )}
                 {fromDate && (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
-                    From: {fromDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    From:{" "}
+                    {fromDate.toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
                     <button
                       onClick={() => setFromDate(null)}
                       className="transition-colors hover:text-foreground"
@@ -297,7 +299,11 @@ const TutorsPage = () => {
                 )}
                 {toDate && (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
-                    To: {toDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    To:{" "}
+                    {toDate.toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
                     <button
                       onClick={() => setToDate(null)}
                       className="transition-colors hover:text-foreground"

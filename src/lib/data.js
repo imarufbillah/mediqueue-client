@@ -1,0 +1,25 @@
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+// Get all tutors
+export const getTutors = async () => {
+  const res = await fetch(`${API_BASE_URL}/tutors`);
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    throw new Error(error.message || "Failed to get tutors");
+  }
+
+  return res.json();
+};
+
+// Get tutor by id
+export const getTutorById = async (id) => {
+  const res = await fetch(`${API_BASE_URL}/tutors/${id}`);
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    throw new Error(error.message || "Failed to get tutor");
+  }
+
+  return res.json();
+};
