@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import TutorCard from "@/components/tutor/tutor-card/TutorCard";
+import TutorCard from "@/components/tutors/TutorCard";
 
 const containerVariants = {
   hidden: {},

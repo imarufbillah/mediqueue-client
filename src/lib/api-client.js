@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { authClient } from "./auth-client";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -53,6 +52,7 @@ export const updateTutor = async (id, tutorData) => {
   return res.json();
 };
 
+// Delete a tutor
 export const deleteTutor = async (id) => {
   const res = await fetch(`${API_BASE_URL}/my-tutors/${id}`, {
     method: "DELETE",
