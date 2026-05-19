@@ -19,6 +19,7 @@ import {
 import { listTutor } from "@/lib/api-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
 const SUBJECTS = [
   "Mathematics",
@@ -44,6 +45,9 @@ const SectionHeader = ({ title }) => (
 );
 
 const AddTutorPage = () => {
+  const { data: session } = authClient.useSession();
+  const userId = session?.user?.id;
+
   const router = useRouter();
 
   const [photoUrl, setPhotoUrl] = useState("");
@@ -61,7 +65,7 @@ const AddTutorPage = () => {
     const form = e.currentTarget;
 
     try {
-      await listTutor(data);
+      await listTutor({ ...data, userId });
       toast.success("Tutor listed successfully!");
 
       form.reset();
@@ -310,7 +314,12 @@ const AddTutorPage = () => {
           {/* Submit Area */}
           <div className="border-t border-border pt-8">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <Button type="submit" size="lg" className="sm:flex-1" disabled={isPending}>
+              <Button
+                type="submit"
+                size="lg"
+                className="sm:flex-1"
+                disabled={isPending}
+              >
                 {isPending ? (
                   <>
                     <Loader2 className="size-4 animate-spin" />
