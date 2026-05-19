@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { authClient } from "./auth-client";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -14,6 +15,7 @@ const jwtToken = async () => {
   }
 };
 
+// List a tutor
 export const listTutor = async (tutorData) => {
   const res = await fetch(`${API_BASE_URL}/tutors`, {
     method: "POST",
@@ -27,6 +29,25 @@ export const listTutor = async (tutorData) => {
   if (!res.ok) {
     const error = await res.json().catch(() => ({}));
     throw new Error(error.message || "Failed to list tutor");
+  }
+
+  return res.json();
+};
+
+// Update a tutor
+export const updateTutor = async (id, tutorData) => {
+  const res = await fetch(`${API_BASE_URL}/my-tutors/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${await jwtToken()}`,
+    },
+    body: JSON.stringify(tutorData),
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    throw new Error(error.message || "Failed to update tutor");
   }
 
   return res.json();
