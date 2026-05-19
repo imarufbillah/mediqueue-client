@@ -65,7 +65,7 @@ const AddTutorPage = () => {
     const form = e.currentTarget;
 
     try {
-      await listTutor({ ...data, userId });
+      await listTutor({ ...data, userId, slotsRemaining: data.totalSlots });
       toast.success("Tutor listed successfully!");
 
       form.reset();
@@ -307,6 +307,32 @@ const AddTutorPage = () => {
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+
+              {/* Rating */}
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="rating">Rating</Label>
+                <Input
+                  id="rating"
+                  name="rating"
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  placeholder="e.g. 4.9"
+                />
+              </div>
+
+              {/* Bio */}
+              <div className="flex flex-col gap-2 sm:col-span-2">
+                <Label htmlFor="bio">Bio</Label>
+                <textarea
+                  id="bio"
+                  name="bio"
+                  rows={4}
+                  placeholder="Write a short bio about the tutor's experience, teaching style, and specializations..."
+                  className="flex w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                />
               </div>
             </div>
           </section>
