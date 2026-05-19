@@ -1,10 +1,25 @@
+import { authClient } from "./auth-client";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+const jwtToken = async () => {
+  const { data, error } = await authClient.token();
+
+  if (error) {
+    return null;
+  }
+
+  if (data) {
+    return data.token;
+  }
+};
 
 export const listTutor = async (tutorData) => {
   const res = await fetch(`${API_BASE_URL}/tutors`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${await jwtToken()}`,
     },
     body: JSON.stringify(tutorData),
   });
