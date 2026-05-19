@@ -16,6 +16,7 @@ import { newBooking } from "@/lib/api-client";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import TokenCard from "@/components/booking/TokenCard";
+import { format } from "date-fns";
 
 const generateRef = () => {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -46,10 +47,13 @@ const BookingModal = ({
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
 
+    const today = format(new Date(), "MMM dd, yyyy");
+
     try {
       await newBooking({
         ...data,
         studentId: session?.user?.id,
+        bookingDate: today,
         status: "active",
       });
       toast.success("Tutor booked successfully!");
