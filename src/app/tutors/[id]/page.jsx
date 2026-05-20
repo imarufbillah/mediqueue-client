@@ -79,22 +79,6 @@ const TutorDetailsPage = async ({ params }) => {
                   <MapPin className="size-3.5" />
                   <span>{tutor.location}</span>
                 </div>
-
-                <div className="flex items-center gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`size-4 ${
-                        i < Math.floor(tutor.rating)
-                          ? "fill-primary text-primary"
-                          : "text-muted"
-                      }`}
-                    />
-                  ))}
-                  <span className="ml-1.5 text-sm font-medium text-foreground">
-                    {tutor.rating}
-                  </span>
-                </div>
               </div>
             </div>
 

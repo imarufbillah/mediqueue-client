@@ -309,20 +309,6 @@ const AddTutorPage = () => {
                 </Select>
               </div>
 
-              {/* Rating */}
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="rating">Rating</Label>
-                <Input
-                  id="rating"
-                  name="rating"
-                  type="number"
-                  min="0"
-                  max="5"
-                  step="0.1"
-                  placeholder="e.g. 4.9"
-                />
-              </div>
-
               {/* Bio */}
               <div className="flex flex-col gap-2 sm:col-span-2">
                 <Label htmlFor="bio">Bio</Label>

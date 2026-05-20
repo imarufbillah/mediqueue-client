@@ -72,6 +72,8 @@ const SignUpPage = () => {
       newErrors.password = "Password must contain an uppercase letter";
     } else if (!hasLowercase) {
       newErrors.password = "Password must contain a lowercase letter";
+    } else if (!hasNumber) {
+      newErrors.password = "Password must contain a number";
     }
 
     setErrors(newErrors);
@@ -378,9 +380,7 @@ const SignUpPage = () => {
             {/* Divider */}
             <div className="relative flex items-center">
               <div className="flex-1 border-t border-border" />
-              <span className="px-4 text-sm text-muted-foreground">
-                Or continue with
-              </span>
+              <span className="px-4 text-sm text-muted-foreground">Or</span>
               <div className="flex-1 border-t border-border" />
             </div>
 

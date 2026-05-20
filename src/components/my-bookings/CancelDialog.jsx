@@ -18,7 +18,7 @@ const CancelDialog = ({ selectedBooking, open, onOpenChange }) => {
   const router = useRouter();
   const handleCancel = async () => {
     try {
-      await cancelBooking(selectedBooking._id);
+      await cancelBooking(selectedBooking._id, selectedBooking.tutor.tutorId);
       toast.success("Booking cancelled successfully!");
       router.refresh();
     } catch (error) {

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, Star, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,8 @@ import GoogleAuth from "@/components/auth/GoogleAuth";
 
 const SignInPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -67,7 +69,7 @@ const SignInPage = () => {
       }
 
       toast.success("Signed in successfully!");
-      router.push("/");
+      router.push(redirectTo);
     } catch (err) {
       toast.error("Something went wrong. Please try again later.");
     } finally {
@@ -230,9 +232,7 @@ const SignInPage = () => {
             {/* Divider */}
             <div className="relative flex items-center">
               <div className="flex-1 border-t border-border" />
-              <span className="px-4 text-sm text-muted-foreground">
-                Or continue with
-              </span>
+              <span className="px-4 text-sm text-muted-foreground">Or</span>
               <div className="flex-1 border-t border-border" />
             </div>
 

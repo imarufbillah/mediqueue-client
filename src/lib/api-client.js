@@ -88,14 +88,14 @@ export const newBooking = async (bookingData) => {
   return res.json();
 };
 
-export const cancelBooking = async (id) => {
+export const cancelBooking = async (id, tutorId) => {
   const res = await fetch(`${API_BASE_URL}/my-bookings/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${await jwtToken()}`,
     },
-    body: JSON.stringify({ status: "cancelled" }),
+    body: JSON.stringify({ tutorId: tutorId }),
   });
 
   if (!res.ok) {

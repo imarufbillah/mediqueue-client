@@ -5,25 +5,23 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 const GoogleAuth = () => {
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
   const [loading, setLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
 
     try {
-      const { error } = await authClient.signIn.social({
+      await authClient.signIn.social({
         provider: "google",
+        callbackURL: redirectTo,
       });
-
-      if (error) {
-        toast.error(error.message || "Sign in failed. Please try again.");
-        return;
-      }
     } catch (err) {
       toast.error("Something went wrong. Please try again later.");
-    } finally {
       setLoading(false);
     }
   };

@@ -9,7 +9,8 @@ import BookingModal from "./BookingModal";
 const BookingPanel = ({ tutor }) => {
   const [bookingOpen, setBookingOpen] = useState(false);
 
-  const isFull = tutor.slotsRemaining === 0;
+  const slotsRemaining = Number(tutor.slotsRemaining);
+  const isFull = slotsRemaining === 0;
   const isFuture = new Date(tutor.startDate) > new Date();
 
   return (

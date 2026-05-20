@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import TokenCard from "@/components/booking/TokenCard";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 
 const generateRef = () => {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -27,6 +28,7 @@ const generateRef = () => {
 };
 
 const BookingModal = ({ open, onOpenChange, tutor }) => {
+  const router = useRouter();
   const {
     name: tutorName,
     photoUrl: tutorImage,
@@ -56,6 +58,7 @@ const BookingModal = ({ open, onOpenChange, tutor }) => {
       studentId,
       tutor: {
         name: tutorName,
+        tutorId,
         photo: tutorImage,
         subject,
       },
@@ -67,6 +70,7 @@ const BookingModal = ({ open, onOpenChange, tutor }) => {
     try {
       await newBooking(bookingData);
       toast.success("Tutor booked successfully!");
+      router.refresh();
       setBookingData({
         studentName: data.studentName,
         bookingRef: generateRef(),
