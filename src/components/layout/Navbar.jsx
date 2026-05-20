@@ -20,7 +20,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -34,14 +36,19 @@ const AUTH_LINKS = [
 ];
 
 const Navbar = () => {
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
   const isLoggedIn = !!session?.user;
   const user = session?.user || { name: "User", image: null };
 
   const pathname = usePathname();
 
   const handleSignOut = async () => {
-    await authClient.signOut();
+    try {
+      await authClient.signOut();
+      toast.success("Signed out successfully. See you next time!");
+    } catch (error) {
+      toast.error("Failed to sign out. Please try again.");
+    }
   };
 
   const [scrolled, setScrolled] = useState(false);
@@ -55,7 +62,11 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const links = isLoggedIn ? [...NAV_LINKS, ...AUTH_LINKS] : NAV_LINKS;
+  const links = isPending
+    ? NAV_LINKS
+    : isLoggedIn
+      ? [...NAV_LINKS, ...AUTH_LINKS]
+      : NAV_LINKS;
 
   const isActive = (href) => {
     if (href === "/") return pathname === "/";
@@ -120,8 +131,15 @@ const Navbar = () => {
           {/* Theme Toggle */}
           <ThemeToggle />
 
+          {/* Loading State — Session Pending */}
+          {isPending && (
+            <div className="hidden items-center gap-3 sm:flex">
+              <Skeleton className="h-9 w-9 rounded-full" />
+            </div>
+          )}
+
           {/* Logged Out State */}
-          {!isLoggedIn && (
+          {!isPending && !isLoggedIn && (
             <div className="hidden items-center gap-3 sm:flex">
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/sign-in">Sign in</Link>
@@ -133,7 +151,7 @@ const Navbar = () => {
           )}
 
           {/* Logged In State — Avatar Dropdown */}
-          {isLoggedIn && (
+          {!isPending && isLoggedIn && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -224,7 +242,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Auth Buttons */}
-          {!isLoggedIn && (
+          {!isPending && !isLoggedIn && (
             <div className="mt-8 flex flex-col gap-3 border-t border-border/50 pt-8">
               <Button variant="outline" size="lg" asChild>
                 <Link href="/sign-in" onClick={() => setMobileOpen(false)}>
@@ -239,8 +257,21 @@ const Navbar = () => {
             </div>
           )}
 
+          {/* Mobile Loading State */}
+          {isPending && (
+            <div className="mt-8 flex flex-col gap-3 border-t border-border/50 pt-8">
+              <div className="flex items-center gap-3 px-4 py-3">
+                <Skeleton className="size-10 rounded-full" />
+                <div className="flex flex-col gap-1.5">
+                  <Skeleton className="h-4 w-28" />
+                  <Skeleton className="h-3 w-36" />
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Mobile Logged In */}
-          {isLoggedIn && (
+          {!isPending && isLoggedIn && (
             <div className="mt-8 flex flex-col gap-1 border-t border-border/50 pt-8">
               <Link
                 href="/profile"
