@@ -44,4 +44,4 @@ next-env.d.ts
 .env.local
 AGENTS.md
 CLAUDE.md
-./vscode/*
+/.vscode

@@ -4,17 +4,24 @@ import TutorCardSkeleton from "@/components/tutors/TutorCardSkeleton";
 const TutorsLoading = () => {
   return (
     <div className="min-h-dvh bg-background pt-20">
-      {/* Header / Search Zone Skeleton */}
+      {/* Header / Search Zone — real content */}
       <div className="border-b border-border bg-muted/50 pb-8 pt-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Title Row */}
           <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <div className="flex flex-col gap-2">
-              <Skeleton className="h-3 w-16" />
-              <Skeleton className="h-9 w-64 sm:w-80" />
-              <Skeleton className="mt-1 h-4 w-72 sm:w-96" />
+            <div>
+              <span className="mb-1 block text-xs font-medium uppercase tracking-widest text-primary">
+                Explore
+              </span>
+              <h1 className="font-heading text-3xl tracking-tight text-foreground sm:text-4xl">
+                Find Your Tutor
+              </h1>
+              <p className="mt-1 text-sm text-muted-foreground sm:text-base">
+                Browse all available tutors. Filter by name or session date to
+                find the perfect match.
+              </p>
             </div>
-            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-4 w-32 shrink-0" />
           </div>
 
           {/* Search & Filter Bar Skeleton */}
