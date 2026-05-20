@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { Menu, User, LogOut, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ThemeToggle";
+import { Logo } from "@/components/Logo";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -94,15 +95,7 @@ const Navbar = () => {
     >
       <nav className="mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link
-          href="/"
-          className="flex items-center gap-0.5 transition-opacity duration-200 hover:opacity-80"
-        >
-          <span className="text-2xl font-heading text-foreground">Medi</span>
-          <span className="text-2xl font-sans font-bold text-primary">
-            Queue
-          </span>
-        </Link>
+        <Logo size="lg" />
 
         {/* Center Navigation — Desktop */}
         <div className="hidden items-center gap-1 md:flex">
@@ -219,10 +212,7 @@ const Navbar = () => {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
               </span>
-              <span className="text-lg font-heading text-foreground">Medi</span>
-              <span className="text-lg font-sans font-bold text-primary">
-                Queue
-              </span>
+              <Logo size="md" link={false} />
             </SheetTitle>
           </SheetHeader>
 

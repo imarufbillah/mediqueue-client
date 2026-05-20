@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Mail, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/Logo";
 
 const SERVICES_LINKS = [
   { label: "Browse Tutors", href: "/tutors" },
@@ -26,14 +27,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
           {/* Column 1 — Brand */}
           <div className="flex flex-col gap-5">
-            <Link href="/" className="flex items-center gap-0.5">
-              <span className="text-2xl font-heading text-foreground">
-                Medi
-              </span>
-              <span className="text-2xl font-sans font-bold text-primary">
-                Queue
-              </span>
-            </Link>
+            <Logo size="lg" />
             <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
               MediQueue connects students with verified tutors for seamless
               online and offline learning. Book your session in seconds.

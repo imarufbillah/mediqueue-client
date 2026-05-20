@@ -2,6 +2,7 @@
 
 import { CalendarDays, Clock, MapPin, User } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import { Logo } from "@/components/Logo";
 
 const TokenCard = ({
   tutorName = "Dr. Sarah Ahmed",
@@ -29,12 +30,7 @@ const TokenCard = ({
         <div className="flex flex-1 flex-col gap-4 p-6 sm:p-8">
           {/* Header */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-0.5">
-              <span className="text-sm font-heading text-foreground">Medi</span>
-              <span className="text-sm font-sans font-bold text-primary">
-                Queue
-              </span>
-            </div>
+            <Logo size="sm" link={false} />
             <span className="font-mono text-[0.6rem] font-medium uppercase tracking-widest text-primary">
               Session Ticket
             </span>

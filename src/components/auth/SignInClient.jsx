@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import GoogleAuth from "@/components/auth/GoogleAuth";
+import { Logo } from "@/components/Logo";
 
 export const SignInClient = () => {
   const router = useRouter();
@@ -111,11 +112,8 @@ export const SignInClient = () => {
         {/* Content */}
         <div className="relative z-10 flex flex-col items-center px-12 text-center">
           {/* Logo */}
-          <div className="mb-10 flex items-center gap-0.5">
-            <span className="text-3xl font-heading text-foreground">Medi</span>
-            <span className="text-3xl font-sans font-bold text-primary">
-              Queue
-            </span>
+          <div className="mb-10">
+            <Logo size="xl" link={false} />
           </div>
 
           {/* Display heading */}
@@ -149,11 +147,8 @@ export const SignInClient = () => {
       <div className="flex w-full flex-col items-center justify-center bg-background px-6 py-12 sm:px-12 lg:w-[55%] lg:px-16 xl:px-24">
         <div className="w-full max-w-md">
           {/* Mobile logo */}
-          <div className="mb-8 flex items-center gap-0.5 lg:hidden">
-            <span className="text-2xl font-heading text-foreground">Medi</span>
-            <span className="text-2xl font-sans font-bold text-primary">
-              Queue
-            </span>
+          <div className="mb-8 lg:hidden">
+            <Logo size="lg" link={false} />
           </div>
 
           {/* Header */}
