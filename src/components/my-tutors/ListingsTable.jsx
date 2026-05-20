@@ -81,7 +81,7 @@ const ListingsTable = ({ tutors, onEdit, onDelete }) => {
                 {/* Availability */}
                 <TableCell>
                   <div className="flex flex-col text-sm text-muted-foreground">
-                    <span>{tutor.availableDays}</span>
+                    <span>{tutor.availableDays} Days</span>
                     <span className="text-xs">{tutor.timeSlot}</span>
                   </div>
                 </TableCell>

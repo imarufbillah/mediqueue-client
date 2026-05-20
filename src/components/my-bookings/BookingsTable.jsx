@@ -130,7 +130,14 @@ const BookingsTable = ({ bookings, onCancel }) => {
                         Cancel
                       </Button>
                     ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
+                      <Button
+                        disabled
+                        variant="ghost"
+                        size="sm"
+                        className="text-destructive"
+                      >
+                        Cancel
+                      </Button>
                     )}
                   </TableCell>
                 </TableRow>
