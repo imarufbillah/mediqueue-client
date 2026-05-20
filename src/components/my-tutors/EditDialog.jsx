@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import { DollarSign, User, Loader2 } from "lucide-react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,6 +52,9 @@ const EditDialog = ({ open, onOpenChange, tutor: selectedTutor }) => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photoUrl, setPhotoUrl] = useState(selectedTutor?.photoUrl || "");
+  const [editStartDate, setEditStartDate] = useState(
+    selectedTutor?.startDate ? new Date(selectedTutor.startDate) : null,
+  );
 
   const handleEdit = async (e) => {
     e.preventDefault();
@@ -63,6 +68,11 @@ const EditDialog = ({ open, onOpenChange, tutor: selectedTutor }) => {
     data.totalSlots = Number(data.totalSlots);
     data.hourlyFee = Number(data.hourlyFee);
     data.experience = Number(data.experience);
+
+    // Send startDate as ISO string for database storage
+    if (editStartDate) {
+      data.startDate = new Date(editStartDate).toISOString();
+    }
 
     try {
       await updateTutor(selectedTutor._id, data);
@@ -195,14 +205,14 @@ const EditDialog = ({ open, onOpenChange, tutor: selectedTutor }) => {
 
                 {/* Start Date */}
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="edit-start-date">Session Start Date</Label>
-                  <Input
-                    id="edit-start-date"
-                    name="startDate"
-                    type="text"
-                    defaultValue={selectedTutor.startDate}
-                    placeholder="e.g. May 20, 2026"
-                    required
+                  <Label>Session Start Date</Label>
+                  <DatePicker
+                    selected={editStartDate}
+                    onChange={(date) => setEditStartDate(date)}
+                    placeholderText="Pick a date"
+                    dateFormat="MMM dd, yyyy"
+                    minDate={new Date()}
+                    className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   />
                 </div>
 

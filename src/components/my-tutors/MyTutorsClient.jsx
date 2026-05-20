@@ -28,6 +28,7 @@ const MyTutorsClient = ({ myTutors }) => {
         onDelete={handleDelete}
       />
       <EditDialog
+        key={selectedTutor?._id}
         open={editOpen}
         onOpenChange={setEditOpen}
         tutor={selectedTutor}

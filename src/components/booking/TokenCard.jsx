@@ -1,6 +1,7 @@
 "use client";
 
 import { CalendarDays, Clock, MapPin, User } from "lucide-react";
+import { formatDate } from "@/lib/utils";
 
 const TokenCard = ({
   tutorName = "Dr. Sarah Ahmed",
@@ -30,7 +31,9 @@ const TokenCard = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-0.5">
               <span className="text-sm font-heading text-foreground">Medi</span>
-              <span className="text-sm font-sans font-bold text-primary">Queue</span>
+              <span className="text-sm font-sans font-bold text-primary">
+                Queue
+              </span>
             </div>
             <span className="font-mono text-[0.6rem] font-medium uppercase tracking-widest text-primary">
               Session Ticket
@@ -49,7 +52,7 @@ const TokenCard = ({
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
               <CalendarDays className="size-3.5 text-primary" />
-              <span>{sessionDate}</span>
+              <span>{formatDate(sessionDate)}</span>
             </div>
             <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
               <Clock className="size-3.5 text-primary" />
@@ -102,7 +105,10 @@ const TokenCard = ({
               <div
                 key={i}
                 className={`size-2.5 rounded-sm ${
-                  [0, 1, 4, 5, 6, 7, 10, 11, 12, 17, 18, 23, 24, 25, 28, 29, 30, 31, 34, 35].includes(i)
+                  [
+                    0, 1, 4, 5, 6, 7, 10, 11, 12, 17, 18, 23, 24, 25, 28, 29,
+                    30, 31, 34, 35,
+                  ].includes(i)
                     ? "bg-primary"
                     : "bg-primary/20"
                 }`}

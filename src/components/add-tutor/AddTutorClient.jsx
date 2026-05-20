@@ -62,6 +62,11 @@ export const AddTutorClient = () => {
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
 
+    // Send startDate as ISO string for database storage
+    if (startDate) {
+      data.startDate = new Date(startDate).toISOString();
+    }
+
     const form = e.currentTarget;
 
     try {

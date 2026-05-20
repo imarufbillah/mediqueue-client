@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import BookingPanel from "@/components/tutor-details/BookingPanel";
 import { getTutorById } from "@/lib/data";
+import { formatDate } from "@/lib/utils";
 
 export const generateMetadata = async ({ params }) => {
   const { id: tutorId } = await params;
@@ -35,7 +36,11 @@ const TutorDetailsPage = async ({ params }) => {
     { icon: Clock, label: "Available Days", value: tutor.availableDays },
     { icon: Clock, label: "Time Slot", value: tutor.timeSlot },
     { icon: Monitor, label: "Teaching Mode", value: tutor.teachingMode },
-    { icon: CalendarDays, label: "Session Start", value: tutor.startDate },
+    {
+      icon: CalendarDays,
+      label: "Session Start",
+      value: formatDate(tutor.startDate),
+    },
   ];
 
   return (

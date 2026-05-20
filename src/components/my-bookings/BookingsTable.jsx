@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatDate } from "@/lib/utils";
 
 const BookingsTable = ({ bookings, onCancel }) => {
   const totalCount = bookings.length;
@@ -100,7 +101,7 @@ const BookingsTable = ({ bookings, onCancel }) => {
                   {/* Booked On */}
                   <TableCell>
                     <span className="text-sm text-muted-foreground">
-                      {booking.bookedOn}
+                      {formatDate(booking.bookedOn)}
                     </span>
                   </TableCell>
 

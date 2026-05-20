@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { MapPin, Clock, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CardSlotIndicator from "./CardSlotIndicator";
+import { formatDate } from "@/lib/utils";
 
 const TutorCard = ({ tutor }) => {
   const {
@@ -27,7 +28,7 @@ const TutorCard = ({ tutor }) => {
 
   const getButtonText = () => {
     if (isFull) return "Fully Booked";
-    if (isFuture) return `Opens ${startDate}`;
+    if (isFuture) return `Opens ${formatDate(startDate)}`;
     return "Book Session";
   };
 
@@ -89,7 +90,7 @@ const TutorCard = ({ tutor }) => {
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <CalendarDays className="size-4 shrink-0 text-primary" />
-            <span>Starts {startDate}</span>
+            <span>Starts {formatDate(startDate)}</span>
           </div>
         </div>
 

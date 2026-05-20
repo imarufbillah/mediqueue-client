@@ -12,11 +12,10 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { newBooking, useSession } from "@/lib/api-client";
+import { newBooking } from "@/lib/api-client";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import TokenCard from "@/components/booking/TokenCard";
-import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 
 const generateRef = () => {
@@ -36,15 +35,12 @@ const BookingModal = ({ open, onOpenChange, tutor }) => {
     _id: tutorId,
   } = tutor;
   const { data: session } = authClient.useSession();
-  const {
-    name: studentName,
-    email: studentEmail,
-    id: studentId,
-  } = session?.user || {};
+  const { email: studentEmail, id: studentId } = session?.user || {};
 
   const [loading, setLoading] = useState(false);
   const [booked, setBooked] = useState(false);
   const [bookingData, setBookingData] = useState(null);
+  const studentName = bookingData?.studentName || "";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,8 +48,8 @@ const BookingModal = ({ open, onOpenChange, tutor }) => {
 
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
+    const studentName = data.studentName.trim();
 
-    const today = format(new Date(), "MMM dd, yyyy");
     const bookingData = {
       studentId,
       tutor: {
@@ -63,7 +59,7 @@ const BookingModal = ({ open, onOpenChange, tutor }) => {
         subject,
       },
       student: { name: studentName, email: studentEmail },
-      bookedOn: today,
+      bookedOn: new Date().toISOString(),
       status: "active",
     };
 

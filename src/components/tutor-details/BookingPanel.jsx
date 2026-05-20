@@ -5,6 +5,7 @@ import { CalendarDays, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SlotIndicator from "./SlotIndicator";
 import BookingModal from "./BookingModal";
+import { formatDate } from "@/lib/utils";
 
 const BookingPanel = ({ tutor }) => {
   const [bookingOpen, setBookingOpen] = useState(false);
@@ -40,7 +41,7 @@ const BookingPanel = ({ tutor }) => {
         {/* Session Start */}
         <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
           <CalendarDays className="size-4 text-primary" />
-          <span>Sessions start {tutor.startDate}</span>
+          <span>Sessions start {formatDate(tutor.startDate)}</span>
         </div>
 
         {/* Action */}
@@ -57,10 +58,10 @@ const BookingPanel = ({ tutor }) => {
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2 rounded-lg bg-muted px-3 py-2 text-sm text-muted-foreground">
               <CalendarDays className="size-4 text-primary" />
-              <span>Booking opens {tutor.startDate}</span>
+              <span>Booking opens {formatDate(tutor.startDate)}</span>
             </div>
             <Button size="lg" className="w-full" disabled>
-              Opens {tutor.startDate}
+              Opens {formatDate(tutor.startDate)}
             </Button>
           </div>
         ) : (
