@@ -39,7 +39,7 @@ const TutorCard = ({ tutor }) => {
       className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300 hover:border-primary hover:shadow-lg"
     >
       {/* Image Area */}
-      <div className="relative h-48 w-full overflow-hidden">
+      <div className="relative h-64 w-full overflow-hidden">
         {photo ? (
           <Image
             src={photo}
@@ -54,8 +54,6 @@ const TutorCard = ({ tutor }) => {
             </span>
           </div>
         )}
-        {/* Gradient overlay at bottom */}
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-card to-transparent" />
 
         {/* Subject Badge — top left */}
         <span className="absolute top-3 left-3 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
@@ -86,7 +84,7 @@ const TutorCard = ({ tutor }) => {
         <div className="flex flex-col gap-2.5">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Clock className="size-4 shrink-0 text-primary" />
-            <span>{availableDays}</span>
+            <span>{availableDays} Available Days</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <CalendarDays className="size-4 shrink-0 text-primary" />
@@ -107,11 +105,13 @@ const TutorCard = ({ tutor }) => {
       </div>
 
       {/* Card Footer */}
-      <Link href={`/tutors/${_id}`} className="border-t border-border p-4">
-        <Button size="lg" className="w-full" disabled={isFull}>
-          {getButtonText()}
-        </Button>
-      </Link>
+      <div className="border-t border-border p-4">
+        <Link href={`/tutors/${_id}`}>
+          <Button size="lg" className="w-full cursor-pointer" disabled={isFull}>
+            {getButtonText()}
+          </Button>
+        </Link>
+      </div>
     </motion.div>
   );
 };
