@@ -61,7 +61,7 @@ const ListingsTable = ({ tutors, onEdit, onDelete }) => {
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <Image
-                      src={tutor.photo}
+                      src={tutor.photoUrl}
                       alt={tutor.name}
                       width={36}
                       height={36}
