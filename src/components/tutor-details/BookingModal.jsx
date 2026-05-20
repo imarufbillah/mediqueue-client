@@ -26,6 +26,8 @@ const generateRef = () => {
   return `MQ-2026-${code}`;
 };
 
+const PHONE_REGEX = /^\+?[\d\s\-()]{7,15}$/;
+
 const BookingModal = ({ open, onOpenChange, tutor }) => {
   const router = useRouter();
   const {
@@ -40,16 +42,45 @@ const BookingModal = ({ open, onOpenChange, tutor }) => {
   const [loading, setLoading] = useState(false);
   const [booked, setBooked] = useState(false);
   const [bookingData, setBookingData] = useState(null);
+  const [errors, setErrors] = useState({});
+
+  const validate = (data) => {
+    const newErrors = {};
+
+    if (!data.studentName?.trim()) {
+      newErrors.studentName = "Student name is required";
+    } else if (data.studentName.trim().length < 3) {
+      newErrors.studentName = "Name must be at least 3 characters";
+    }
+
+    if (!data.phone?.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!PHONE_REGEX.test(data.phone.trim())) {
+      newErrors.phone = "Enter a valid phone number";
+    }
+
+    return newErrors;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
+
+    // Run validation
+    const validationErrors = validate(data);
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
+
+    setLoading(true);
+
     const studentName = data.studentName.trim();
 
-    const bookingData = {
+    const bookingPayload = {
       studentId,
       tutor: {
         name: tutorName,
@@ -57,20 +88,25 @@ const BookingModal = ({ open, onOpenChange, tutor }) => {
         photo: tutorImage,
         subject,
       },
-      student: { name: studentName, phone: data.phone, email: studentEmail },
+      student: {
+        name: studentName,
+        phone: data.phone.trim(),
+        email: studentEmail,
+      },
       bookedOn: new Date().toISOString(),
       status: "active",
     };
 
     try {
-      await newBooking(bookingData);
+      await newBooking(bookingPayload);
       toast.success("Tutor booked successfully!");
       router.refresh();
       setBookingData({
-        studentName: data.studentName,
+        studentName,
         bookingRef: generateRef(),
       });
       setBooked(true);
+      setErrors({});
     } catch (error) {
       toast.error("Failed to book tutor. Please try again.");
     } finally {
@@ -83,6 +119,7 @@ const BookingModal = ({ open, onOpenChange, tutor }) => {
       // Reset state when dialog closes
       setBooked(false);
       setBookingData(null);
+      setErrors({});
     }
     onOpenChange(value);
   };
@@ -137,8 +174,12 @@ const BookingModal = ({ open, onOpenChange, tutor }) => {
                   name="studentName"
                   type="text"
                   placeholder="Your full name"
-                  required
                 />
+                {errors.studentName && (
+                  <p className="text-sm text-destructive">
+                    {errors.studentName}
+                  </p>
+                )}
               </div>
 
               {/* Phone Number */}
@@ -148,9 +189,11 @@ const BookingModal = ({ open, onOpenChange, tutor }) => {
                   id="phone"
                   name="phone"
                   type="tel"
-                  placeholder="e.g. +880 1XXXXXXXXX"
-                  required
+                  placeholder="e.g. +8801XXXXXXXXX"
                 />
+                {errors.phone && (
+                  <p className="text-sm text-destructive">{errors.phone}</p>
+                )}
               </div>
 
               {/* Tutor ID — auto-filled, read-only */}
