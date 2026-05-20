@@ -98,6 +98,7 @@ const Hero = () => {
             alt=""
             fill
             priority
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
             className="object-cover object-center"
           />
           {/* Dark overlay — subtle, lets image show through */}
