@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "./lib/auth";
 
-// This function can be marked `async` if using `await` inside
+const publicRoutes = ["/", "/tutors", "/sign-in", "/sign-up"];
+
 export async function proxy(request) {
   const { pathname } = request.nextUrl;
 
@@ -9,28 +10,27 @@ export async function proxy(request) {
     headers: request.headers,
   });
 
-  if (pathname === "/tutors") {
+  // Prevent logged in users from auth pages
+  if (session && (pathname === "/sign-in" || pathname === "/sign-up")) {
+    return NextResponse.redirect(new URL("/profile", request.url));
+  }
+
+  // Allow public routes
+  if (publicRoutes.includes(pathname)) {
     return NextResponse.next();
   }
 
+  // Protect private routes
   if (!session) {
     const signInUrl = new URL("/sign-in", request.url);
     signInUrl.searchParams.set("redirect", pathname);
+
     return NextResponse.redirect(signInUrl);
   }
 
   return NextResponse.next();
 }
 
-// Alternatively, you can use a default export:
-// export default function proxy(request) { ... }
-
 export const config = {
-  matcher: [
-    "/tutors/:path*",
-    "/my-tutors",
-    "/my-bookings",
-    "/add-tutor",
-    "/profile",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

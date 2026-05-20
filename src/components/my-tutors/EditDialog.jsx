@@ -212,7 +212,7 @@ const EditDialog = ({ open, onOpenChange, tutor: selectedTutor }) => {
                     placeholderText="Pick a date"
                     dateFormat="MMM dd, yyyy"
                     minDate={new Date()}
-                    className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                    className="flex h-11 w-full rounded-lg border border-input bg-transparent px-4 py-2 text-sm text-foreground transition-all duration-200 placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-3 focus:ring-ring/50"
                   />
                 </div>
 
