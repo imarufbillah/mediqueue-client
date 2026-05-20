@@ -290,23 +290,10 @@ const TutorsClient = ({ tutors: initialTutors }) => {
       {/* Results Area */}
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         {/* Results Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">
-            {isLoading
-              ? "Searching..."
-              : `${displayedTutors.length} tutors found`}
-          </span>
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-44">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="featured">Sort by: Featured</SelectItem>
-              <SelectItem value="price-low">Price: Low to High</SelectItem>
-              <SelectItem value="price-high">Price: High to Low</SelectItem>
-              <SelectItem value="newest">Newest First</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="mb-6 text-sm text-muted-foreground">
+          {isLoading
+            ? "Searching..."
+            : `${displayedTutors.length} tutors found`}
         </div>
 
         {/* Loading Skeleton */}
