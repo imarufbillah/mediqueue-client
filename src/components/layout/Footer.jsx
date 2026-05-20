@@ -6,7 +6,7 @@ const SERVICES_LINKS = [
   { label: "Browse Tutors", href: "/tutors" },
   { label: "Book a Session", href: "/tutors" },
   { label: "Become a Tutor", href: "/add-tutor" },
-  { label: "How It Works", href: "#" },
+  { label: "How It Works", href: "#how-it-works" },
   { label: "Pricing", href: "#" },
 ];
 
