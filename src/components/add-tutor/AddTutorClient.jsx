@@ -35,6 +35,8 @@ const SUBJECTS = [
 
 const TEACHING_MODES = ["Online", "Offline", "Both"];
 
+const URL_REGEX = /^https?:\/\/.+\..+/;
+
 const SectionHeader = ({ title }) => (
   <div className="mb-6">
     <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
@@ -44,6 +46,11 @@ const SectionHeader = ({ title }) => (
   </div>
 );
 
+const FieldError = ({ message }) => {
+  if (!message) return null;
+  return <p className="text-sm text-destructive">{message}</p>;
+};
+
 export const AddTutorClient = () => {
   const { data: session } = authClient.useSession();
   const userId = session?.user?.id;
@@ -52,15 +59,95 @@ export const AddTutorClient = () => {
 
   const [photoUrl, setPhotoUrl] = useState("");
   const [startDate, setStartDate] = useState(null);
+  const [subject, setSubject] = useState("");
+  const [teachingMode, setTeachingMode] = useState("");
   const [isPending, setIsPending] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const validate = (data) => {
+    const newErrors = {};
+
+    // Basic Information
+    if (!data.name?.trim()) {
+      newErrors.name = "Tutor name is required";
+    } else if (data.name.trim().length < 3) {
+      newErrors.name = "Name must be at least 3 characters";
+    }
+
+    if (!photoUrl.trim()) {
+      newErrors.photoUrl = "Photo URL is required";
+    } else if (!URL_REGEX.test(photoUrl)) {
+      newErrors.photoUrl =
+        "Enter a valid URL (e.g. https://example.com/photo.jpg)";
+    }
+
+    if (!subject) {
+      newErrors.subject = "Please select a subject";
+    }
+
+    // Availability
+    if (!data.availableDays?.trim()) {
+      newErrors.availableDays = "Available days are required";
+    }
+
+    if (!data.timeSlot?.trim()) {
+      newErrors.timeSlot = "Time slot is required";
+    }
+
+    if (!startDate) {
+      newErrors.startDate = "Session start date is required";
+    }
+
+    if (!data.totalSlots || Number(data.totalSlots) < 1) {
+      newErrors.totalSlots = "At least 1 slot is required";
+    }
+
+    // Professional Details
+    if (!data.institution?.trim()) {
+      newErrors.institution = "Institution is required";
+    }
+
+    if (!data.experience || Number(data.experience) < 0) {
+      newErrors.experience = "Experience is required";
+    }
+
+    if (!data.location?.trim()) {
+      newErrors.location = "Location is required";
+    }
+
+    // Session Info
+    if (!data.hourlyFee || Number(data.hourlyFee) <= 0) {
+      newErrors.hourlyFee = "Hourly fee must be greater than 0";
+    }
+
+    if (!teachingMode) {
+      newErrors.teachingMode = "Please select a teaching mode";
+    }
+
+    if (!data.bio?.trim()) {
+      newErrors.bio = "Bio is required";
+    } else if (data.bio.trim().length < 20) {
+      newErrors.bio = "Bio must be at least 20 characters";
+    }
+
+    return newErrors;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setIsPending(true);
-
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
+
+    // Run validation
+    const validationErrors = validate(data);
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
+
+    setIsPending(true);
 
     // Send startDate as ISO string for database storage
     if (startDate) {
@@ -76,6 +163,9 @@ export const AddTutorClient = () => {
       form.reset();
       setPhotoUrl("");
       setStartDate(null);
+      setSubject("");
+      setTeachingMode("");
+      setErrors({});
 
       setTimeout(() => {
         router.push("/");
@@ -122,6 +212,7 @@ export const AddTutorClient = () => {
                   type="text"
                   placeholder="Full name of the tutor"
                 />
+                <FieldError message={errors.name} />
               </div>
 
               {/* Photo URL with preview */}
@@ -154,12 +245,17 @@ export const AddTutorClient = () => {
                     )}
                   </div>
                 </div>
+                <FieldError message={errors.photoUrl} />
               </div>
 
               {/* Subject */}
               <div className="flex flex-col gap-2">
                 <Label>Subject / Category</Label>
-                <Select name="subject">
+                <Select
+                  name="subject"
+                  value={subject}
+                  onValueChange={(val) => setSubject(val)}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select a subject" />
                   </SelectTrigger>
@@ -171,6 +267,7 @@ export const AddTutorClient = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                <FieldError message={errors.subject} />
               </div>
             </div>
           </section>
@@ -188,6 +285,7 @@ export const AddTutorClient = () => {
                   type="text"
                   placeholder="e.g. Sun – Thu"
                 />
+                <FieldError message={errors.availableDays} />
               </div>
 
               {/* Time Slot */}
@@ -199,6 +297,7 @@ export const AddTutorClient = () => {
                   type="text"
                   placeholder="e.g. 5:00 PM – 8:00 PM"
                 />
+                <FieldError message={errors.timeSlot} />
               </div>
 
               {/* Session Start Date */}
@@ -213,6 +312,7 @@ export const AddTutorClient = () => {
                   minDate={new Date()}
                   className="flex h-11 w-full rounded-lg border border-input bg-transparent px-4 py-2 text-sm text-foreground transition-all duration-200 placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-3 focus:ring-ring/50"
                 />
+                <FieldError message={errors.startDate} />
               </div>
 
               {/* Total Slots */}
@@ -225,6 +325,7 @@ export const AddTutorClient = () => {
                   min="1"
                   placeholder="e.g. 10"
                 />
+                <FieldError message={errors.totalSlots} />
               </div>
             </div>
           </section>
@@ -242,6 +343,7 @@ export const AddTutorClient = () => {
                   type="text"
                   placeholder="University or school name"
                 />
+                <FieldError message={errors.institution} />
               </div>
 
               {/* Experience */}
@@ -260,6 +362,7 @@ export const AddTutorClient = () => {
                     years
                   </span>
                 </div>
+                <FieldError message={errors.experience} />
               </div>
 
               {/* Location */}
@@ -271,6 +374,7 @@ export const AddTutorClient = () => {
                   type="text"
                   placeholder="e.g. Dhanmondi, Dhaka"
                 />
+                <FieldError message={errors.location} />
               </div>
             </div>
           </section>
@@ -295,12 +399,17 @@ export const AddTutorClient = () => {
                     className="pl-9"
                   />
                 </div>
+                <FieldError message={errors.hourlyFee} />
               </div>
 
               {/* Teaching Mode */}
               <div className="flex flex-col gap-2">
                 <Label>Teaching Mode</Label>
-                <Select name="teachingMode">
+                <Select
+                  name="teachingMode"
+                  value={teachingMode}
+                  onValueChange={(val) => setTeachingMode(val)}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select mode" />
                   </SelectTrigger>
@@ -312,6 +421,7 @@ export const AddTutorClient = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                <FieldError message={errors.teachingMode} />
               </div>
 
               {/* Bio */}
@@ -324,6 +434,7 @@ export const AddTutorClient = () => {
                   placeholder="Write a short bio about the tutor's experience, teaching style, and specializations..."
                   className="flex w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 />
+                <FieldError message={errors.bio} />
               </div>
             </div>
           </section>
