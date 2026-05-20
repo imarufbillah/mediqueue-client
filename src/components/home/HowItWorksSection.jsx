@@ -85,7 +85,7 @@ const HowItWorksSection = () => {
             >
               {/* Dashed connector — horizontal on desktop */}
               {index < STEPS.length - 1 && (
-                <div className="pointer-events-none absolute top-10 left-[calc(50%+48px)] hidden h-px w-[calc(100%-96px)] border-t-2 border-dashed border-border md:block" />
+                <div className="pointer-events-none absolute top-15 left-[calc(50%+48px)] hidden h-px w-[calc(100%-96px)] border-t-2 border-dashed border-border md:block" />
               )}
 
               {/* Dashed connector — vertical on mobile */}
