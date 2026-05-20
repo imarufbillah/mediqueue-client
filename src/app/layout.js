@@ -44,6 +44,7 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${dmSerifDisplay.variable} ${plusJakartaSans.variable} ${jetBrainsMono.variable} antialiased`}
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
     >
       <body className="transition-colors duration-300">
         <ThemeProvider>
