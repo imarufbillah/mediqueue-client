@@ -40,7 +40,6 @@ const BookingModal = ({ open, onOpenChange, tutor }) => {
   const [loading, setLoading] = useState(false);
   const [booked, setBooked] = useState(false);
   const [bookingData, setBookingData] = useState(null);
-  const studentName = bookingData?.studentName || "";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,7 +57,7 @@ const BookingModal = ({ open, onOpenChange, tutor }) => {
         photo: tutorImage,
         subject,
       },
-      student: { name: studentName, email: studentEmail },
+      student: { name: studentName, phone: data.phone, email: studentEmail },
       bookedOn: new Date().toISOString(),
       status: "active",
     };
