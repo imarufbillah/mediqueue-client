@@ -82,14 +82,31 @@ export const SignInClient = () => {
       {/* Left Panel — Branding (desktop only) */}
       <div className="relative hidden w-[45%] overflow-hidden bg-card lg:flex lg:flex-col lg:items-center lg:justify-center">
         {/* Background gradient */}
-        <div className="absolute inset-0 bg-linear-to-br from-card via-background to-card" />
+        <div className="absolute inset-0 bg-linear-to-b from-card via-background to-card" />
 
-        {/* Decorative teal shapes */}
-        <div className="pointer-events-none absolute -top-20 -left-20 h-72 w-72 rounded-full bg-primary/15 blur-[80px]" />
-        <div className="pointer-events-none absolute top-1/3 right-10 h-48 w-48 rounded-full border-2 border-primary/20" />
-        <div className="pointer-events-none absolute bottom-1/4 left-1/4 h-64 w-64 rounded-full border border-primary/10" />
-        <div className="pointer-events-none absolute bottom-20 right-1/4 h-32 w-32 rounded-full bg-primary/10 blur-[60px]" />
-        <div className="pointer-events-none absolute top-1/2 left-1/3 h-20 w-20 rounded-full bg-primary/20 blur-2xl" />
+        {/* Decorative diagonal lines */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(135deg, var(--primary) 0px, var(--primary) 1px, transparent 1px, transparent 20px)",
+          }}
+        />
+
+        {/* Floating hexagonal shapes */}
+        <div className="pointer-events-none absolute top-16 left-12 h-20 w-20 rotate-30ded-lg border-2 border-primary/25" />
+        <div className="pointer-events-none absolute top-28 left-20 h-14 w-14 rotate-60 rounded-lg border border-primary/15 bg-primary/5" />
+        <div className="pointer-events-none absolute bottom-1/4 right-10 h-28 w-28 -rotate-12 rounded-2xl border-2 border-primary/20" />
+        <div className="pointer-events-none absolute bottom-[35%] right-20 h-16 w-16 rotate-20 rounded-xl border border-primary/10 bg-primary/5" />
+
+        {/* Glowing orbs */}
+        <div className="pointer-events-none absolute top-1/4 right-0 h-40 w-40 rounded-full bg-primary/12 blur-[70px]" />
+        <div className="pointer-events-none absolute bottom-16 left-0 h-52 w-52 rounded-full bg-primary/8 blur-[90px]" />
+        <div className="pointer-events-none absolute top-1/2 left-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-[50px]" />
+
+        {/* Concentric rings — center accent */}
+        <div className="pointer-events-none absolute top-1/2 left-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/10" />
+        <div className="pointer-events-none absolute top-1/2 left-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/5" />
 
         {/* Content */}
         <div className="relative z-10 flex flex-col items-center px-12 text-center">
