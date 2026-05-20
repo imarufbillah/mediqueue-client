@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { Search, X, CalendarDays, RotateCcw } from "lucide-react";
 import DatePicker from "react-datepicker";
@@ -16,6 +16,9 @@ import {
 import TutorCard from "@/components/tutors/TutorCard";
 import TutorCardSkeleton from "./TutorCardSkeleton";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const DEBOUNCE_MS = 400;
+
 const containerVariants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.08 } },
@@ -26,21 +29,123 @@ const cardVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
 };
 
-const TutorsClient = ({ tutors }) => {
-  const [search, setSearch] = useState("");
+const formatDateParam = (date) => {
+  if (!date) return "";
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+};
+
+const TutorsClient = ({ tutors: initialTutors }) => {
+  // Uncontrolled search input — typing does NOT trigger re-renders
+  const searchRef = useRef(null);
+  const timerRef = useRef(null);
+  const abortRef = useRef(null);
+
+  // These states only update when a fetch completes or filters are applied/reset
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
   const [sortBy, setSortBy] = useState("featured");
-  const [isLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [results, setResults] = useState(null); // null = show initialTutors
+  const [activeSearch, setActiveSearch] = useState(""); // committed search for chips
 
-  const hasFilters = search || fromDate || toDate;
+  const hasFilters = activeSearch || fromDate || toDate;
+  const displayedTutors = results !== null ? results : initialTutors;
 
-  const filteredTutors = search.toLowerCase() === "xyz" ? [] : tutors;
+  const fetchTutors = useCallback(async (searchTerm, startDate, endDate) => {
+    if (abortRef.current) abortRef.current.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    setIsLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (searchTerm.trim()) params.set("search", searchTerm.trim());
+      if (startDate) params.set("startDate", formatDateParam(startDate));
+      if (endDate) params.set("endDate", formatDateParam(endDate));
+
+      const queryString = params.toString();
+      const url = `${API_BASE_URL}/tutors${queryString ? `?${queryString}` : ""}`;
+
+      const res = await fetch(url, { signal: controller.signal });
+      if (!res.ok) throw new Error("Failed to fetch tutors");
+
+      const data = await res.json();
+      setResults(data);
+      setActiveSearch(searchTerm.trim());
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        setResults([]);
+      }
+    } finally {
+      if (!controller.signal.aborted) {
+        setIsLoading(false);
+      }
+    }
+  }, []);
+
+  const triggerSearch = useCallback(
+    (searchValue, startDate, endDate) => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+
+      const hasAny = searchValue.trim() || startDate || endDate;
+
+      if (!hasAny) {
+        // No filters — reset immediately
+        setResults(null);
+        setActiveSearch("");
+        setIsLoading(false);
+        return;
+      }
+
+      timerRef.current = setTimeout(() => {
+        fetchTutors(searchValue, startDate, endDate);
+      }, DEBOUNCE_MS);
+    },
+    [fetchTutors],
+  );
+
+  // Search input handler — no state update, just schedule fetch
+  const handleSearchInput = () => {
+    const value = searchRef.current?.value || "";
+    triggerSearch(value, fromDate, toDate);
+  };
+
+  // Clear search
+  const handleClearSearch = () => {
+    if (searchRef.current) searchRef.current.value = "";
+    triggerSearch("", fromDate, toDate);
+  };
+
+  // Date change handlers — these do update state (only 2 possible changes, not per-keystroke)
+  const handleFromDateChange = (date) => {
+    setFromDate(date);
+  };
+
+  const handleToDateChange = (date) => {
+    setToDate(date);
+  };
+
+  // Trigger fetch when dates change
+  useEffect(() => {
+    const searchValue = searchRef.current?.value || "";
+    triggerSearch(searchValue, fromDate, toDate);
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [fromDate, toDate, triggerSearch]);
 
   const resetFilters = () => {
-    setSearch("");
+    if (searchRef.current) searchRef.current.value = "";
     setFromDate(null);
     setToDate(null);
+    setResults(null);
+    setActiveSearch("");
+    setIsLoading(false);
+    if (timerRef.current) clearTimeout(timerRef.current);
   };
 
   const dateInputClass =
@@ -66,26 +171,27 @@ const TutorsClient = ({ tutors }) => {
               </p>
             </div>
             <span className="shrink-0 text-sm text-muted-foreground">
-              Showing {filteredTutors.length} tutors
+              Showing {displayedTutors.length} tutors
             </span>
           </div>
 
           {/* Search & Filter Bar */}
           <div className="rounded-xl border border-border bg-card p-4 sm:p-5">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
-              {/* Search Input */}
+              {/* Search Input — uncontrolled */}
               <div className="relative flex-1 lg:max-w-[50%]">
                 <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <input
+                  ref={searchRef}
                   type="text"
                   placeholder="Search by tutor name..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  defaultValue=""
+                  onInput={handleSearchInput}
                   className="flex h-12 w-full rounded-xl border border-input bg-background pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />
-                {search && (
+                {activeSearch && (
                   <button
-                    onClick={() => setSearch("")}
+                    onClick={handleClearSearch}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
                     aria-label="Clear search"
                   >
@@ -100,7 +206,7 @@ const TutorsClient = ({ tutors }) => {
                   <CalendarDays className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                   <DatePicker
                     selected={fromDate}
-                    onChange={(date) => setFromDate(date)}
+                    onChange={handleFromDateChange}
                     placeholderText="Start date"
                     dateFormat="MMM dd, yyyy"
                     className={dateInputClass}
@@ -110,7 +216,7 @@ const TutorsClient = ({ tutors }) => {
                   <CalendarDays className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                   <DatePicker
                     selected={toDate}
-                    onChange={(date) => setToDate(date)}
+                    onChange={handleToDateChange}
                     placeholderText="End date"
                     dateFormat="MMM dd, yyyy"
                     minDate={fromDate}
@@ -134,11 +240,11 @@ const TutorsClient = ({ tutors }) => {
             {/* Active Filter Chips */}
             {hasFilters && (
               <div className="mt-4 flex flex-wrap items-center gap-2">
-                {search && (
+                {activeSearch && (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
-                    Name: {search}
+                    Name: {activeSearch}
                     <button
-                      onClick={() => setSearch("")}
+                      onClick={handleClearSearch}
                       className="transition-colors hover:text-foreground"
                     >
                       <X className="size-3" />
@@ -186,7 +292,9 @@ const TutorsClient = ({ tutors }) => {
         {/* Results Header */}
         <div className="mb-6 flex items-center justify-between">
           <span className="text-sm text-muted-foreground">
-            {filteredTutors.length} tutors found
+            {isLoading
+              ? "Searching..."
+              : `${displayedTutors.length} tutors found`}
           </span>
           <Select value={sortBy} onValueChange={setSortBy}>
             <SelectTrigger className="w-44">
@@ -208,8 +316,7 @@ const TutorsClient = ({ tutors }) => {
               <TutorCardSkeleton key={i} />
             ))}
           </div>
-        ) : filteredTutors.length === 0 ? (
-          /* No Results */
+        ) : displayedTutors.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24">
             <div className="mb-6 flex size-20 items-center justify-center rounded-2xl bg-muted">
               <Search className="size-10 text-muted-foreground" />
@@ -223,31 +330,19 @@ const TutorsClient = ({ tutors }) => {
             <Button onClick={resetFilters}>Clear Search</Button>
           </div>
         ) : (
-          /* Tutor Grid */
-          <>
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
-            >
-              {filteredTutors.map((tutor) => (
-                <motion.div key={tutor._id} variants={cardVariants}>
-                  <TutorCard tutor={tutor} />
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {/* Load More */}
-            <div className="mt-12 flex flex-col items-center gap-2">
-              <Button variant="outline" size="lg">
-                Load More Tutors
-              </Button>
-              <span className="text-xs text-muted-foreground">
-                Showing {filteredTutors.length} of 48 tutors
-              </span>
-            </div>
-          </>
+          <motion.div
+            key={displayedTutors.map((t) => t._id).join(",")}
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {displayedTutors.map((tutor) => (
+              <motion.div key={tutor._id} variants={cardVariants}>
+                <TutorCard tutor={tutor} />
+              </motion.div>
+            ))}
+          </motion.div>
         )}
       </div>
     </>
