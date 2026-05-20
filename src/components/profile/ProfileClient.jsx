@@ -6,7 +6,7 @@ import IdentityCard from "./IdentityCard";
 import EditProfileSection from "./EditProfileSection";
 import RecentActivitySection from "./RecentActivitySection";
 
-const ProfileClient = ({ user }) => {
+const ProfileClient = ({ user, listedTutors, bookings }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   return (
@@ -19,7 +19,11 @@ const ProfileClient = ({ user }) => {
           className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.85fr]"
         >
           {/* Left Column — Identity Card */}
-          <IdentityCard user={user} />
+          <IdentityCard
+            user={user}
+            listedTutors={listedTutors}
+            bookings={bookings}
+          />
 
           {/* Right Column — Profile Details */}
           <div className="flex flex-col gap-8">

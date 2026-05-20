@@ -67,6 +67,7 @@ export const getTutorsByCurrentUser = async () => {
   return res.json();
 };
 
+// Get bookings by current user
 export const getBookingsByCurrentUser = async () => {
   const res = await fetch(`${API_BASE_URL}/my-bookings`, {
     headers: {

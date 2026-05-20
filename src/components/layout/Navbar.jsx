@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Menu, User, LogOut, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,7 @@ const AUTH_LINKS = [
 ];
 
 const Navbar = () => {
+  const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
   const isLoggedIn = !!session?.user;
   const user = session?.user || { name: "User", image: null };
@@ -45,6 +46,7 @@ const Navbar = () => {
   const handleSignOut = async () => {
     try {
       await authClient.signOut();
+      router.refresh();
       toast.success("Signed out successfully. See you next time!");
     } catch (error) {
       toast.error("Failed to sign out. Please try again.");

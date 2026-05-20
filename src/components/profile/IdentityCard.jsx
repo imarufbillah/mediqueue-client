@@ -14,12 +14,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
-
-const STATS = [
-  { label: "Total Bookings", value: 8 },
-  { label: "Active Sessions", value: 3 },
-  { label: "Tutors Added", value: 4 },
-];
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const QUICK_LINKS = [
   { icon: CalendarDays, label: "My Booked Sessions", href: "/my-bookings" },
@@ -27,7 +24,25 @@ const QUICK_LINKS = [
   { icon: Plus, label: "Add New Tutor", href: "/add-tutor" },
 ];
 
-const IdentityCard = ({ user }) => {
+const IdentityCard = ({ user, listedTutors, bookings }) => {
+  const router = useRouter();
+  const handleSignOut = async () => {
+    try {
+      await authClient.signOut();
+      router.refresh();
+      toast.success("Signed out successfully. See you next time!");
+    } catch (error) {
+      toast.error("Failed to sign out. Please try again.");
+    }
+  };
+
+  const activeSessions = bookings.filter((b) => b.status === "active");
+  const STATS = [
+    { label: "Total Bookings", value: bookings.length },
+    { label: "Active Sessions", value: activeSessions.length },
+    { label: "Tutors Added", value: listedTutors.length },
+  ];
+
   const initials = user.name
     ? user.name
         .split(" ")
@@ -57,7 +72,7 @@ const IdentityCard = ({ user }) => {
               </div>
             )}
             {/* Online indicator */}
-            <span className="absolute bottom-0.5 right-0.5 size-3 rounded-full border-2 border-card bg-green-500" />
+            <span className="absolute bottom-0.5 right-0.5 size-4 rounded-full border-2 border-card bg-green-500" />
             {/* Hover overlay */}
             <div className="absolute inset-0 flex cursor-pointer flex-col items-center justify-center gap-0.5 rounded-full bg-foreground/60 opacity-0 transition-opacity duration-200 hover:opacity-100">
               <Camera className="size-4 text-background" />
@@ -133,6 +148,7 @@ const IdentityCard = ({ user }) => {
 
         {/* Sign Out */}
         <Button
+          onClick={handleSignOut}
           variant="ghost"
           className="w-full border border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive"
         >
