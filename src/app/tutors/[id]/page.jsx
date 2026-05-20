@@ -13,6 +13,14 @@ import {
 import BookingPanel from "@/components/tutor-details/BookingPanel";
 import { getTutorById } from "@/lib/data";
 
+export const generateMetadata = async ({ params }) => {
+  const { id: tutorId } = await params;
+  const tutor = await getTutorById(tutorId);
+  return {
+    title: tutor ? `${tutor.name} — ${tutor.subject}` : "Tutor Details",
+  };
+};
+
 const TutorDetailsPage = async ({ params }) => {
   const { id: tutorId } = await params;
   const tutor = await getTutorById(tutorId);

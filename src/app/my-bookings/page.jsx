@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import MyBookingsClient from "@/components/my-bookings/MyBookingsClient";
 import { getBookingsByCurrentUser } from "@/lib/data";
 
+export const metadata = {
+  title: "My Booked Sessions",
+};
+
 const MyBookingsPage = async () => {
   const myBookings = await getBookingsByCurrentUser();
 

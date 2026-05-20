@@ -30,7 +30,10 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata = {
-  title: "MediQueue - Tutor Booking System",
+  title: {
+    template: "%s | MediQueue",
+    default: "MediQueue - Tutor Booking System",
+  },
   description:
     "MediQueue is a tutor booking system designed to connect students with qualified tutors in various subjects. Our platform allows students to easily find and book tutoring sessions, while providing tutors with a convenient way to manage their schedules and connect with potential clients.",
 };

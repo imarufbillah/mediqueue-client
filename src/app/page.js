@@ -4,6 +4,10 @@ import HowItWorksSection from "@/components/home/HowItWorksSection";
 import StatsSection from "@/components/home/StatsSection";
 import { getLimitedTutors } from "@/lib/data";
 
+export const metadata = {
+  title: "Home | MediQueue",
+};
+
 export default async function Home() {
   const tutors = await getLimitedTutors();
 

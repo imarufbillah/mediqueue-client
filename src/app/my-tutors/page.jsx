@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import MyTutorsClient from "@/components/my-tutors/MyTutorsClient";
 import { getTutorsByCurrentUser } from "@/lib/data";
 
+export const metadata = {
+  title: "My Tutor Listings",
+};
+
 const MyTutorsPage = async () => {
   const myTutors = await getTutorsByCurrentUser();
 
