@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Pencil, Lock, Eye } from "lucide-react";
+import { Pencil, Lock, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,20 +12,23 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { formatDate } from "@/lib/utils";
 
-const PROFILE_FIELDS = [
-  { label: "Full Name", value: "Maruf Billah", editable: true },
-  { label: "Email Address", value: "maruf@example.com", editable: false },
-  {
-    label: "Photo URL",
-    value: "https://ui-avatars.com/api/?name=Maruf+Billah",
-    editable: true,
-  },
-  { label: "Account Type", value: "Student", editable: false },
-  { label: "Joined", value: "January 2025", editable: false },
-];
+const EditProfileSection = ({ user, isEditing, setIsEditing }) => {
+  const [photoUrl, setPhotoUrl] = useState(user.image || "");
+  const [showPreview, setShowPreview] = useState(false);
+  const profileFields = [
+    { label: "Full Name", value: user.name, editable: true },
+    { label: "Email Address", value: user.email, editable: false },
+    {
+      label: "Photo URL",
+      value: user.image || "",
+      editable: true,
+    },
+    { label: "Account Type", value: "Student", editable: false },
+    { label: "Joined", value: formatDate(user.createdAt), editable: false },
+  ];
 
-const EditProfileSection = ({ isEditing, setIsEditing }) => {
   return (
     <div className="rounded-2xl border border-border bg-card p-6">
       {/* Header */}
@@ -56,7 +61,7 @@ const EditProfileSection = ({ isEditing, setIsEditing }) => {
             {/* Full Name */}
             <div className="flex flex-col gap-2">
               <Label htmlFor="edit-name">Full Name</Label>
-              <Input id="edit-name" type="text" defaultValue="Maruf Billah" />
+              <Input id="edit-name" type="text" defaultValue={user.name} />
             </div>
 
             {/* Email — disabled */}
@@ -73,7 +78,7 @@ const EditProfileSection = ({ isEditing, setIsEditing }) => {
               <Input
                 id="edit-email"
                 type="email"
-                defaultValue="maruf@example.com"
+                defaultValue={user.email}
                 disabled
                 className="bg-muted text-muted-foreground"
               />
@@ -86,14 +91,52 @@ const EditProfileSection = ({ isEditing, setIsEditing }) => {
                 <Input
                   id="edit-photo"
                   type="url"
-                  defaultValue="https://ui-avatars.com/api/?name=Maruf+Billah"
+                  value={photoUrl}
+                  onChange={(e) => setPhotoUrl(e.target.value)}
                   className="flex-1"
                 />
-                <Button variant="outline" size="sm" className="shrink-0">
-                  <Eye className="size-3.5" />
-                  Preview
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="shrink-0"
+                  onClick={() => setShowPreview(!showPreview)}
+                >
+                  {showPreview ? (
+                    <>
+                      <EyeOff className="size-3.5" />
+                      Hide
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="size-3.5" />
+                      Preview
+                    </>
+                  )}
                 </Button>
               </div>
+              {/* Photo Preview */}
+              <AnimatePresence>
+                {showPreview && photoUrl && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="mt-2 flex items-center gap-3 rounded-lg bg-muted p-3"
+                  >
+                    <Image
+                      src={photoUrl}
+                      alt="Avatar preview"
+                      width={48}
+                      height={48}
+                      className="size-12 rounded-full object-cover ring-2 ring-primary"
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      This is how your avatar will appear.
+                    </span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Action Buttons */}
@@ -121,11 +164,11 @@ const EditProfileSection = ({ isEditing, setIsEditing }) => {
             transition={{ duration: 0.2 }}
             className="flex flex-col"
           >
-            {PROFILE_FIELDS.map((field, index) => (
+            {profileFields.map((field, index) => (
               <div
                 key={field.label}
                 className={`flex flex-col gap-1 py-4 ${
-                  index < PROFILE_FIELDS.length - 1
+                  index < profileFields.length - 1
                     ? "border-b border-border"
                     : ""
                 }`}

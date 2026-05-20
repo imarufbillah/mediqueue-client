@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import {
   Calendar,
@@ -12,6 +13,7 @@ import {
   BadgeCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { formatDate } from "@/lib/utils";
 
 const STATS = [
   { label: "Total Bookings", value: 8 },
@@ -25,16 +27,35 @@ const QUICK_LINKS = [
   { icon: Plus, label: "Add New Tutor", href: "/add-tutor" },
 ];
 
-const IdentityCard = () => {
+const IdentityCard = ({ user }) => {
+  const initials = user.name
+    ? user.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "U";
+
   return (
     <div className="lg:sticky lg:top-24 lg:self-start">
       <div className="flex flex-col items-center gap-5 rounded-2xl border border-border bg-card p-6">
         {/* Avatar */}
         <div className="relative">
           <div className="relative size-24 rounded-full ring-2 ring-primary ring-offset-4 ring-offset-card">
-            <div className="flex size-full items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">
-              MB
-            </div>
+            {user.image ? (
+              <Image
+                src={user.image}
+                alt={user.name}
+                width={96}
+                height={96}
+                className="size-full rounded-full object-cover"
+              />
+            ) : (
+              <div className="flex size-full items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">
+                {initials}
+              </div>
+            )}
             {/* Online indicator */}
             <span className="absolute bottom-0.5 right-0.5 size-3 rounded-full border-2 border-card bg-green-500" />
             {/* Hover overlay */}
@@ -51,18 +72,20 @@ const IdentityCard = () => {
 
         {/* Name & Email */}
         <div className="flex flex-col items-center gap-1 text-center">
-          <h2 className="font-heading text-xl text-foreground">Maruf Billah</h2>
-          <p className="text-sm text-muted-foreground">maruf@example.com</p>
-          <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-accent-foreground">
-            <BadgeCheck className="size-3" />
-            Verified Student
-          </span>
+          <h2 className="font-heading text-xl text-foreground">{user.name}</h2>
+          <p className="text-sm text-muted-foreground">{user.email}</p>
+          {user.emailVerified && (
+            <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-accent-foreground">
+              <BadgeCheck className="size-3" />
+              Verified Student
+            </span>
+          )}
         </div>
 
         {/* Member Since */}
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <Calendar className="size-3.5" />
-          <span>Member since January 2025</span>
+          <span>Member since {formatDate(user.createdAt)}</span>
         </div>
 
         {/* Divider */}
