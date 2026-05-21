@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -12,6 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { cancelBooking } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -26,17 +26,17 @@ const CancelDialog = ({ selectedBooking, open, onOpenChange }) => {
     try {
       await cancelBooking(selectedBooking._id, selectedBooking.tutor.tutorId);
       toast.success("Booking cancelled successfully!");
+      onOpenChange(false);
       router.refresh();
     } catch (error) {
       toast.error("Failed to cancel booking. Please try again.");
     } finally {
-      onOpenChange(false);
       setLoading(false);
     }
   };
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
+    <AlertDialog open={open} onOpenChange={loading ? undefined : onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="font-heading">
@@ -49,7 +49,7 @@ const CancelDialog = ({ selectedBooking, open, onOpenChange }) => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={loading}>Keep Booking</AlertDialogCancel>
-          <AlertDialogAction
+          <Button
             onClick={handleCancel}
             disabled={loading}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
@@ -62,7 +62,7 @@ const CancelDialog = ({ selectedBooking, open, onOpenChange }) => {
             ) : (
               "Yes, Cancel Session"
             )}
-          </AlertDialogAction>
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
