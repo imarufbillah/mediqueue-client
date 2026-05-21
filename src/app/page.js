@@ -1,20 +1,21 @@
+import { Suspense } from "react";
 import Hero from "@/components/home/Hero";
-import AvailableTutorsSection from "@/components/home/AvailableTutorsSection";
+import AvailableTutorsLoader from "@/components/home/AvailableTutorsLoader";
+import AvailableTutorsSkeleton from "@/components/home/AvailableTutorsSkeleton";
 import HowItWorksSection from "@/components/home/HowItWorksSection";
 import StatsSection from "@/components/home/StatsSection";
-import { getLimitedTutors } from "@/lib/data";
 
 export const metadata = {
   title: "Home | MediQueue",
 };
 
-export default async function Home() {
-  const tutors = await getLimitedTutors();
-
+export default function Home() {
   return (
     <>
       <Hero />
-      <AvailableTutorsSection tutors={tutors} />
+      <Suspense fallback={<AvailableTutorsSkeleton />}>
+        <AvailableTutorsLoader />
+      </Suspense>
       <HowItWorksSection />
       <StatsSection />
     </>
