@@ -77,8 +77,8 @@ const EditDialog = ({ open, onOpenChange, tutor: selectedTutor }) => {
     try {
       await updateTutor(selectedTutor._id, data);
       toast.success("Tutor updated successfully!");
-      onOpenChange(false);
       router.refresh();
+      onOpenChange(false);
     } catch (error) {
       toast.error("Failed to update tutor. Please try again.");
     } finally {

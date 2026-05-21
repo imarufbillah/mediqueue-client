@@ -26,8 +26,8 @@ const DeleteDialog = ({ open, onOpenChange, tutor: selectedTutor }) => {
     try {
       await deleteTutor(selectedTutor._id);
       toast.success("Tutor deleted successfully!");
-      onOpenChange(false);
       router.refresh();
+      onOpenChange(false);
     } catch (error) {
       toast.error("Failed to delete tutor. Please try again.");
     } finally {

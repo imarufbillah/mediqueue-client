@@ -168,8 +168,7 @@ export const AddTutorClient = () => {
 
       setTimeout(() => {
         toast.success("Tutor listed successfully!");
-        router.push("/");
-        router.refresh();
+        router.push("/tutors");
       }, 1000);
     } catch (error) {
       toast.error("Failed to list tutor. Please try again.");
