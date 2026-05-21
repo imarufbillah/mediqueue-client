@@ -15,7 +15,7 @@ import {
 import { newBooking } from "@/lib/api-client";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
-import TokenCard from "@/components/booking/TokenCard";
+import TokenCard from "./TokenCard";
 import { useRouter } from "next/navigation";
 
 const generateRef = () => {
@@ -26,7 +26,7 @@ const generateRef = () => {
   return `MQ-2026-${code}`;
 };
 
-const PHONE_REGEX = /^\+?[\d\s\-()]{7,15}$/;
+const PHONE_REGEX = /^\+?[\d\s\-()]{7,16}$/;
 
 const BookingModal = ({ open, onOpenChange, tutor }) => {
   const router = useRouter();

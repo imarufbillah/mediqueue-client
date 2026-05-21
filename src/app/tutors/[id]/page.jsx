@@ -10,7 +10,7 @@ import {
   Briefcase,
   Monitor,
 } from "lucide-react";
-import BookingPanel from "@/components/tutor-details/BookingPanel";
+import BookingPanel from "@/components/tutor-details/booking/BookingPanel";
 import { getTutorById } from "@/lib/data";
 import { formatDate } from "@/lib/utils";
 
