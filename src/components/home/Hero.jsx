@@ -122,7 +122,7 @@ const Hero = () => {
       <div className="pointer-events-none absolute -top-32 -right-32 h-125 w-125 rounded-full bg-primary/10 blur-[120px]" />
 
       {/* Slide Content — Left Aligned */}
-      <div className="relative z-10 flex w-full items-center px-14 sm:px-20 lg:px-24">
+      <div className="relative z-10 flex w-full items-center px-5 pb-20 sm:px-12 lg:px-24">
         <div className="max-w-2xl">
           <AnimatePresence mode="wait">
             <motion.div
