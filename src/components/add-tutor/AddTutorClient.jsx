@@ -158,7 +158,6 @@ export const AddTutorClient = () => {
 
     try {
       await listTutor({ ...data, userId, slotsRemaining: data.totalSlots });
-      toast.success("Tutor listed successfully!");
 
       form.reset();
       setPhotoUrl("");
@@ -168,6 +167,7 @@ export const AddTutorClient = () => {
       setErrors({});
 
       setTimeout(() => {
+        toast.success("Tutor listed successfully!");
         router.push("/");
         router.refresh();
       }, 1000);

@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,16 +18,20 @@ import { toast } from "sonner";
 
 const DeleteDialog = ({ open, onOpenChange, tutor: selectedTutor }) => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
-    onOpenChange(false);
+    setLoading(true);
 
     try {
       await deleteTutor(selectedTutor._id);
       toast.success("Tutor deleted successfully!");
+      onOpenChange(false);
       router.refresh();
     } catch (error) {
       toast.error("Failed to delete tutor. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,12 +48,20 @@ const DeleteDialog = ({ open, onOpenChange, tutor: selectedTutor }) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Keep Listing</AlertDialogCancel>
+          <AlertDialogCancel disabled={loading}>Keep Listing</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
+            disabled={loading}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            Delete
+            {loading ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                Deleting...
+              </>
+            ) : (
+              "Delete"
+            )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

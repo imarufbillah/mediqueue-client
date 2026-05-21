@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,16 +18,23 @@ import { toast } from "sonner";
 
 const CancelDialog = ({ selectedBooking, open, onOpenChange }) => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
   const handleCancel = async () => {
+    setLoading(true);
+
     try {
       await cancelBooking(selectedBooking._id, selectedBooking.tutor.tutorId);
       toast.success("Booking cancelled successfully!");
+      onOpenChange(false);
       router.refresh();
     } catch (error) {
       toast.error("Failed to cancel booking. Please try again.");
+    } finally {
+      setLoading(false);
     }
-    onOpenChange(false);
   };
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
@@ -39,12 +48,20 @@ const CancelDialog = ({ selectedBooking, open, onOpenChange }) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Keep Booking</AlertDialogCancel>
+          <AlertDialogCancel disabled={loading}>Keep Booking</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleCancel}
+            disabled={loading}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            Yes, Cancel Session
+            {loading ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                Cancelling...
+              </>
+            ) : (
+              "Yes, Cancel Session"
+            )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
