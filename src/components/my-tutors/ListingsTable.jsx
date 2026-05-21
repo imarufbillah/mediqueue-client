@@ -28,25 +28,25 @@ const ListingsTable = ({ tutors, onEdit, onDelete }) => {
   return (
     <div className="overflow-hidden rounded-xl border border-border">
       <div className="overflow-x-auto">
-        <Table>
+        <Table className="min-w-175">
           <TableHeader>
             <TableRow className="bg-muted hover:bg-muted">
-              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <TableHead className="whitespace-nowrap text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Tutor
               </TableHead>
-              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <TableHead className="whitespace-nowrap text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Availability
               </TableHead>
-              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <TableHead className="whitespace-nowrap text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Fee
               </TableHead>
-              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <TableHead className="whitespace-nowrap text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Slots
               </TableHead>
-              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <TableHead className="whitespace-nowrap text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Mode
               </TableHead>
-              <TableHead className="text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <TableHead className="whitespace-nowrap text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Actions
               </TableHead>
             </TableRow>
@@ -58,7 +58,7 @@ const ListingsTable = ({ tutors, onEdit, onDelete }) => {
                 className="transition-colors hover:bg-accent/50"
               >
                 {/* Tutor */}
-                <TableCell>
+                <TableCell className="whitespace-nowrap">
                   <div className="flex items-center gap-3">
                     <Image
                       src={tutor.photoUrl}
@@ -79,7 +79,7 @@ const ListingsTable = ({ tutors, onEdit, onDelete }) => {
                 </TableCell>
 
                 {/* Availability */}
-                <TableCell>
+                <TableCell className="whitespace-nowrap">
                   <div className="flex flex-col text-sm text-muted-foreground">
                     <span>{tutor.availableDays} Days</span>
                     <span className="text-xs">{tutor.timeSlot}</span>
@@ -87,14 +87,14 @@ const ListingsTable = ({ tutors, onEdit, onDelete }) => {
                 </TableCell>
 
                 {/* Fee */}
-                <TableCell>
+                <TableCell className="whitespace-nowrap">
                   <span className="font-mono text-sm font-medium text-foreground">
                     ${tutor.hourlyFee} / hr
                   </span>
                 </TableCell>
 
                 {/* Slots */}
-                <TableCell>
+                <TableCell className="whitespace-nowrap">
                   <div className="flex items-center gap-2">
                     <span
                       className={`size-2 rounded-full ${getSlotColor(
@@ -109,7 +109,7 @@ const ListingsTable = ({ tutors, onEdit, onDelete }) => {
                 </TableCell>
 
                 {/* Mode */}
-                <TableCell>
+                <TableCell className="whitespace-nowrap">
                   <span
                     className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${getModeVariant(
                       tutor.teachingMode,
@@ -120,7 +120,7 @@ const ListingsTable = ({ tutors, onEdit, onDelete }) => {
                 </TableCell>
 
                 {/* Actions */}
-                <TableCell className="text-right">
+                <TableCell className="whitespace-nowrap text-right">
                   <div className="flex items-center justify-end gap-1">
                     <Button
                       variant="ghost"
